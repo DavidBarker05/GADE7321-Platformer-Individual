@@ -3,9 +3,9 @@ using UnityEngine;
 public class Checkpoint : MonoBehaviour
 {
     [field: SerializeField]
-    public bool IsStart { get; set; }
+    public bool IsStart { get; set; } = false;
     [field: SerializeField]
-    public int StartingLives { get; set; }
+    public int StartingLives { get; set; } = 0;
 
     public bool HasBeenCaptured { get; set; }
     public int Lives { get; set; }
