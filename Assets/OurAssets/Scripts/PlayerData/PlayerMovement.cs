@@ -1,37 +1,33 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 
+[RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
 {
-    // movement setup
-    private Rigidbody rb;
-    public float MoveSpeed = 5f;
-    private float moveHorizontal;
-    private float moveForward;
+    public Camera playerCamera;
+    public float walkSpeed = 6f;
+    public float runSpeed = 12f;
+    public float jumpPower = 7f;
+    public float gravity = 10f;
+    public float lookSpeed = 2f;
+    public float lookXLimit = 45f;
+    public float defaultHeight = 2f;
+    public float crouchHeight = 1f;
+    public float crouchSpeed = 3f;
 
-    //jumping setup
-    public float jumpForce = 10f;
-    public float fallMultiplier = 2.5f;
-    public float ascendMultiplier = 2f;
-    private bool isGrounded = true;
-    public LayerMask groundLayer;
-    private float groundCheckTimer = 0f;
-    private float groundCheckDelay = 0.3f;
-    private float playerHeight;
-    private float raycastDist;
+    private Vector3 moveDirection = Vector3.zero;
+    private float rotationX = 0;
+    private CharacterController characterController;
 
+    private bool canMove = true;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true;
-
-        // Raycast (Scanner for game logic) set underneath players feet.
-        playerHeight = GetComponent<CapsuleCollider>().height * transform.localScale.y;
-        raycastDist = (playerHeight / 2) * 0.2f;
-
-        //akes the mouse dissappear and useless.
+        characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -39,63 +35,52 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        moveHorizontal = Input.GetAxisRaw("Horizontal");
-        moveForward = Input.GetAxisRaw("Vertical");
+        Vector3 forward = transform.TransformDirection(Vector3.forward);
+        Vector3 right = transform.TransformDirection(Vector3.right);
 
-        if(Input.GetButtonDown("Jump") && isGrounded)
-        {
-            Jump();
-        }
+        bool isRunning = Input.GetKey(KeyCode.LeftShift);
+        float curSpeedX = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Vertical") : 0;
+        float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Horizontal") : 0;
+        float movementDirectionY = moveDirection.y;
+        moveDirection = (forward * curSpeedX) + (right * curSpeedY);
 
-        if(!isGrounded && groundCheckTimer <= 0)
+        if(Input.GetButton("Jump") && canMove && characterController.isGrounded)
         {
-            Vector3 rayOrigin = transform.position + Vector3.up * 0.1f;
-            isGrounded = Physics.Raycast(rayOrigin, Vector3.down, raycastDist, groundLayer);
+            moveDirection.y = jumpPower;
         }
         else
         {
-            groundCheckTimer -= Time.deltaTime;
+            moveDirection.y = movementDirectionY;
         }
-    }
 
-    void FixedUpdate()
-    {
-        MovePlayer();
-        ApplyJumpPhysics();
-    }
-
-    void MovePlayer()
-    {
-        Vector3 movement = (transform.right * moveHorizontal + transform.forward * moveForward).normalized;
-        Vector3 targetVelocity = movement * MoveSpeed;
-
-        Vector3 velocity = rb.angularVelocity;
-        velocity.x = targetVelocity.x;
-        velocity.z = targetVelocity.z;
-        rb.angularVelocity = velocity;
-
-        if(isGrounded && moveHorizontal ==0 && moveForward == 0)
+        if (!characterController.isGrounded)
         {
-            rb.angularVelocity = new Vector3(0, rb.angularVelocity.y, 0);
+            movementDirectionY -= gravity * Time.deltaTime;
+        }
+
+        if(Input.GetKey(KeyCode.R) && canMove)
+        {
+            characterController.height = crouchHeight;
+            walkSpeed = crouchSpeed;
+            runSpeed = crouchSpeed;
+        }
+        else
+        {
+            characterController.height = defaultHeight;
+            walkSpeed = 6f;
+            runSpeed = 12f;
+        }
+
+        characterController.Move(moveDirection * Time.deltaTime);
+
+        if (canMove)
+        {
+            rotationX += -Input.GetAxis("MouseY") * lookSpeed;
+            rotationX = Mathf.Clamp(rotationX, lookXLimit, lookXLimit);
+            playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+            transform.rotation *= Quaternion.Euler(0, Input.GetAxis("MouseX") * lookSpeed, 0);
         }
     }
 
-    void Jump()
-    {
-        isGrounded = false;
-        groundCheckTimer = groundCheckDelay;
-        rb.angularVelocity = new Vector3(rb.angularVelocity.x, jumpForce, rb.angularVelocity.z);
-
-    }
-    void ApplyJumpPhysics()
-    {
-        if(rb.angularVelocity.y < 0)
-        {
-            rb.angularVelocity += Vector3.up * Physics.gravity.y * fallMultiplier * Time.fixedDeltaTime;
-        }
-        else if(rb.angularVelocity.y > 0)
-        {
-            rb.angularVelocity += Vector3.up * Physics.gravity.y * ascendMultiplier * Time.fixedDeltaTime;
-        }
-    }
+    
 }
