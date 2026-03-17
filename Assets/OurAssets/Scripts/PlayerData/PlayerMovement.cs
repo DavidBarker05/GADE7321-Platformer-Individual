@@ -82,5 +82,5 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    
+    // got rid of floating issue.
 }
