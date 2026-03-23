@@ -143,5 +143,6 @@ Material:
     - _ShallowColour: {r: 0.11098258, g: 0.8113208, b: 0.79053605, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _SpecularColour: {r: 0.4255518, g: 0.5300289, b: 0.6886792, a: 1}
+    - _Tiling: {r: 5000, g: 5000, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
