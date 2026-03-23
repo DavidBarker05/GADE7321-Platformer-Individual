@@ -261,6 +261,7 @@ GameObject:
   - component: {fileID: 5621483531996443619}
   - component: {fileID: 2098784780391194063}
   - component: {fileID: 5778290295873391563}
+  - component: {fileID: 8606444030628826090}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -356,6 +357,19 @@ MonoBehaviour:
   controllerVerticalSensitivity: 202.5
   minVerticalAngle: -80
   maxVerticalAngle: 80
+--- !u!114 &8606444030628826090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6671499995504067324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 533629a3d533feb4fb0ac5c979358561, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerRespawner
+  cameraTarget: {fileID: 9068962570404012239}
 --- !u!1 &8330758705601262211
 GameObject:
   m_ObjectHideFlags: 0

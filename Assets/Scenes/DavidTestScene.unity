@@ -119,6 +119,24 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &203413977 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6671499995504067324, guid: d3a3aad6ab75c2c4aa107170eb38b74a, type: 3}
+  m_PrefabInstance: {fileID: 7760088452211544128}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &203413983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 203413977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 533629a3d533feb4fb0ac5c979358561, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerRespawner
+  cameraTarget: {fileID: 1220426760}
 --- !u!1 &801661510
 GameObject:
   m_ObjectHideFlags: 0
@@ -328,6 +346,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1220426760 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9068962570404012239, guid: d3a3aad6ab75c2c4aa107170eb38b74a, type: 3}
+  m_PrefabInstance: {fileID: 7760088452211544128}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1291088309
 GameObject:
   m_ObjectHideFlags: 0
@@ -521,7 +544,10 @@ PrefabInstance:
     - {fileID: 2816739680473202008, guid: d3a3aad6ab75c2c4aa107170eb38b74a, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6671499995504067324, guid: d3a3aad6ab75c2c4aa107170eb38b74a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 203413983}
   m_SourcePrefab: {fileID: 100100000, guid: d3a3aad6ab75c2c4aa107170eb38b74a, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
