@@ -43,42 +43,37 @@ public class CheckpointManager : MonoBehaviour
 
     public void SetStartingCheckpoint(Checkpoint checkpoint)
     {
-        if (!checkpointStack.IsEmpty && checkpointStack.Peek() != checkpoint)
+        if (checkpointStack.IsEmpty)
         {
-            checkpoint.IsStart = false;
-            checkpoint.StartingLives = 0;
+            CaptureCheckpoint(checkpoint); // Capture the checkpoint
+            Transform startingPoint = checkpoint.RespawnPoint;
+            Player.Respawn(startingPoint); // Spawn player at start
         }
-        else
-        {
-            CaptureCheckpoint(checkpoint);
-            Transform startingPoint = checkpoint.RespawnPoint ?? checkpoint.transform;
-            Player.Respawn(startingPoint);
-        }
+        else checkpoint.HasBeenCaptured = false; // Set HasBeenCaptured to false so that it can still be captured
     }
 
     public void CaptureCheckpoint(Checkpoint checkpoint)
     {
-        if (checkpoint.HasBeenCaptured) return;
-        checkpoint.HasBeenCaptured = true;
-        if (!checkpointStack.IsEmpty)
+        if (checkpoint.HasBeenCaptured) return; // If captured already then don't capture again
+        checkpoint.HasBeenCaptured = true; // Set captured to true (also does this for the starting checkpoint)
+        if (!checkpointStack.IsEmpty) // If a checkpoint is already on the stack
         {
-            Checkpoint last = checkpointStack.Pop();
+            Checkpoint last = checkpointStack.Pop(); // Remove from the stack and get its data
             checkpoint.Lives = last.Lives;
             checkpoint.Score = last.Score;
         }
-        checkpointStack.Push(checkpoint);
+        checkpointStack.Push(checkpoint); // Add the new checkpoint to the stack
     }
 
     public void LoseLife()
     {
-        if (checkpointStack.IsEmpty) return;
-        --checkpointStack.Peek().Lives;
-        if (checkpointStack.Peek().Lives > 0)
+        if (checkpointStack.IsEmpty) return; // If no checkpoints then do nothing
+        if (--checkpointStack.Peek().Lives > 0) // Decrement the lives and if more than 0 respawn
         {
-            Transform respawnPoint = checkpointStack.Peek().RespawnPoint ?? checkpointStack.Peek().transform;
+            Transform respawnPoint = checkpointStack.Peek().RespawnPoint;
             Player.Respawn(respawnPoint);
         }
-        else
+        else // Else die
         {
             // Death Screen
         }

@@ -2,12 +2,14 @@ using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
 {
-    [field: SerializeField]
-    public bool IsStart { get; set; } = false;
-    [field: SerializeField]
-    public int StartingLives { get; set; } = 0;
-    [field: SerializeField]
-    public Transform RespawnPoint { get; private set; } = null;
+    [SerializeField]
+    bool isStart = false;
+    [SerializeField]
+    int startingLives = 0;
+    [SerializeField]
+    Transform respawnPoint;
+
+    public Transform RespawnPoint => respawnPoint ?? transform; // Ignore the unity warning it works fine despite what they say
 
     public bool HasBeenCaptured { get; set; }
     public int Lives { get; set; }
@@ -15,7 +17,11 @@ public class Checkpoint : MonoBehaviour
 
     void Start()
     {
-        if (IsStart) CheckpointManager.Instance.SetStartingCheckpoint(this);
+        if (isStart)
+        {
+            CheckpointManager.Instance.SetStartingCheckpoint(this);
+            Lives = startingLives;
+        }
         else
         {
             HasBeenCaptured = false;
