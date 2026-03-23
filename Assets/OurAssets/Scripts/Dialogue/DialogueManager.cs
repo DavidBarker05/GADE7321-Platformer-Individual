@@ -17,9 +17,7 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue(Dialogue dialogue)
     {
-        // Will this work? Gotta test. Been a while since worked with C# lambdas.
-        // idk if I can use variables that belong to the class or if I need to capture
-        // them like in c++
+        if (dialogue == null) return;
         System.Array.ForEach(dialogue.dialogueItems, (item) => dialogueQueue.Enqueue(item));
         if (!dialogueQueue.IsEmpty) LoadNextItem(); // Load the first item
     }

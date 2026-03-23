@@ -1,0 +1,14 @@
+{
+	"dialogueItems": [
+		{
+			"name": "Item One",
+			"icon": "None",
+			"text": "This is a test item for dialogue"
+		},
+		{
+			"name": "Item Two",
+			"icon": "None",
+			"text": "This is another test item for dialogue"
+		}
+	]
+}

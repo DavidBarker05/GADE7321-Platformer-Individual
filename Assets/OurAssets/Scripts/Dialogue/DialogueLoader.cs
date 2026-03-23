@@ -11,6 +11,8 @@ public class DialogueLoader : MonoBehaviour
     string jsonFolder = "DialogueJSONs";
     [SerializeField]
     string iconFolder = "DialogueIcons";
+    [SerializeField]
+    string[] iconExtensions = new string[] { ".png", ".jpg", ".jpeg" };
 
     void Awake()
     {
@@ -21,20 +23,27 @@ public class DialogueLoader : MonoBehaviour
     T LoadResource<T>(string folder, string fileName) where T : Object
     {
         string resource = Path.Combine(dialogueFolder, folder, fileName);
-        string path = Path.Combine(Application.dataPath, resource);
-        if (File.Exists(path)) return Resources.Load<T>(resource);
-        Debug.LogError($"ERROR: \"{fileName}\" doesn't exist");
-        return null;
+        return Resources.Load<T>(resource);
     }
 
     public Dialogue LoadDialogue(string fileName)
     {
-        if (!fileName.EndsWith(".json")) fileName += ".json";
+        if (fileName.EndsWith(".json", System.StringComparison.OrdinalIgnoreCase)) fileName = fileName.Remove(fileName.Length - ".json".Length);
         TextAsset json = LoadResource<TextAsset>(jsonFolder, fileName);
-        Dialogue dialogue = null;
-        if (json != null) dialogue = JsonUtility.FromJson<Dialogue>(json.text);
-        return dialogue;
+        return json ? JsonUtility.FromJson<Dialogue>(json.text) : null;
     }
 
-    public Sprite LoadIcon(DialogueItem dialogueItem) => LoadResource<Sprite>(iconFolder, dialogueItem.icon);
+    public Sprite LoadIcon(DialogueItem dialogueItem)
+    {
+        string iconFileName = dialogueItem.icon;
+        foreach (string iconExtension in iconExtensions)
+        {
+            if (iconFileName.EndsWith(iconExtension, System.StringComparison.OrdinalIgnoreCase))
+            {
+                iconFileName = iconFileName.Remove(iconFileName.Length - iconExtension.Length);
+                break; // Already removed the extension so break early
+            }
+        }
+        return LoadResource<Sprite>(iconFolder, iconFileName);
+    }
 }
