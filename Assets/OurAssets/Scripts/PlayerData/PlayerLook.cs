@@ -22,10 +22,10 @@ public class PlayerLook : MonoBehaviour
     float controllerVerticalSensitivity = 202.5f;
     [SerializeField]
     [Range(-90f, 0f)]
-    float minVerticalAngle = -30f;
+    float minVerticalAngle = -80f;
     [SerializeField]
     [Range(0f, 90f)]
-    float maxVerticalAngle = 70f;
+    float maxVerticalAngle = 80f;
 
     float pitch = 0f;
     float yaw = 0f;
