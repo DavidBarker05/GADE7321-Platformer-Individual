@@ -2,7 +2,7 @@
 	"dialogueItems": [
 		{
 			"name": "Tutorial",
-			"icon": "None",
+			"icon": "Dialogue/DialogueIcons/info_icon",
 			"text": "Press <sprite=\"XInputSprites/XboxSeriesX_A\" name=\"XboxSeriesX_A\"> to jump",
 			"fontSize": 24
 		}

@@ -2,7 +2,7 @@
 	"dialogueItems": [
 		{
 			"name": "Tutorial",
-			"icon": "None",
+			"icon": "Dialogue/DialogueIcons/info_icon",
 			"text": "Use <sprite=\"KeyboardAndMouseSprites/W_Key_Dark\" name=\"W_Key_Dark\"><sprite=\"KeyboardAndMouseSprites/A_Key_Dark\" name=\"A_Key_Dark\"><sprite=\"KeyboardAndMouseSprites/S_Key_Dark\" name=\"S_Key_Dark\"><sprite=\"KeyboardAndMouseSprites/D_Key_Dark\" name=\"D_Key_Dark\"> to move and <sprite=\"KeyboardAndMouseSprites/Mouse_Simple_Key_Dark\" name=\"Mouse_Simple_Key_Dark\"> to rotate the camera",
 			"fontSize": 24
 		}

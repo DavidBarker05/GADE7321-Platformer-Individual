@@ -2,7 +2,7 @@
 	"dialogueItems": [
 		{
 			"name": "Tutorial",
-			"icon": "None",
+			"icon": "Dialogue/DialogueIcons/info_icon",
 			"text": "Press <sprite=\"XInputSprites/XboxSeriesX_B\" name=\"XboxSeriesX_B\"> to toggle crouch",
 			"fontSize": 24
 		}

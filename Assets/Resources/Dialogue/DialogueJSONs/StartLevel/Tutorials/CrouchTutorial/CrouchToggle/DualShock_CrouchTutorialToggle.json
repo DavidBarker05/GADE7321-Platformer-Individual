@@ -2,7 +2,7 @@
 	"dialogueItems": [
 		{
 			"name": "Tutorial",
-			"icon": "None",
+			"icon": "Dialogue/DialogueIcons/info_icon",
 			"text": "Press <sprite=\"DualShockSprites/PS5_Circle\" name=\"PS5_Circle\"> to toggle crouch",
 			"fontSize": 24
 		}

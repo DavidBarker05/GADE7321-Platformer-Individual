@@ -2,7 +2,7 @@
 	"dialogueItems": [
 		{
 			"name": "Tutorial",
-			"icon": "None",
+			"icon": "Dialogue/DialogueIcons/info_icon",
 			"text": "Press <sprite=\"KeyboardAndMouseSprites/C_Key_Dark\" name=\"C_Key_Dark\"> to toggle crouch",
 			"fontSize": 24
 		}

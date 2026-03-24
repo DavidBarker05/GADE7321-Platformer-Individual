@@ -2,7 +2,7 @@
 	"dialogueItems": [
 		{
 			"name": "Tutorial",
-			"icon": "None",
+			"icon": "Dialogue/DialogueIcons/info_icon",
 			"text": "Use <sprite=\"DualShockSprites/PS5_Left_Stick\" name=\"PS5_Left_Stick\"> to move and <sprite=\"DualShockSprites/PS5_Right_Stick\" name=\"PS5_Right_Stick\"> to rotate the camera",
 			"fontSize": 24
 		}

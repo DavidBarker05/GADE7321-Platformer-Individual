@@ -2,7 +2,7 @@
 	"dialogueItems": [
 		{
 			"name": "Tutorial",
-			"icon": "None",
+			"icon": "Dialogue/DialogueIcons/info_icon",
 			"text": "Press <sprite=\"DualShockSprites/PS5_Cross\" name=\"PS5_Cross\"> to jump",
 			"fontSize": 24
 		}

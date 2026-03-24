@@ -2,7 +2,7 @@
 	"dialogueItems": [
 		{
 			"name": "Tutorial",
-			"icon": "None",
+			"icon": "Dialogue/DialogueIcons/info_icon",
 			"text": "Press <sprite=\"GenericControllerSprites/Positional_Prompts_Down\" name=\"Positional_Prompts_Down\"> to jump",
 			"fontSize": 24
 		}

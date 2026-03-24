@@ -2,7 +2,7 @@
 	"dialogueItems": [
 		{
 			"name": "Tutorial",
-			"icon": "None",
+			"icon": "Dialogue/DialogueIcons/info_icon",
 			"text": "Press <sprite=\"SwitchSprites/Switch_B\" name=\"Switch_B\"> to jump",
 			"fontSize": 24
 		}
