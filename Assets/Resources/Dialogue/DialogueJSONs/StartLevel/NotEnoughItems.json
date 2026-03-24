@@ -1,0 +1,19 @@
+{
+	"dialogueItems": [
+		{
+			"name": "CharacterNameHere",
+			"icon": "None",
+			"text": "I don't have all the pieces for the communications device."
+		},
+		{
+			"name": "CharacterNameHere",
+			"icon": "None",
+			"text": "If I don't have all the pieces then I can't repair the device and I'll never be saved."
+		},
+		{
+			"name": "CharacterNameHere",
+			"icon": "None",
+			"text": "I need to go back..."
+		}
+	]
+}
