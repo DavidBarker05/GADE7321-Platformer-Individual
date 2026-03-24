@@ -3,8 +3,8 @@
 		{
 			"name": "Tutorial",
 			"icon": "None",
-			"text": "Press and hold <sprite="XInputSprites/XboxSeriesX_B" name="XboxSeriesX_B"> to crouch",
-			"fontSize": 24 // This might be too small
+			"text": "Press and hold <sprite=\"XInputSprites/XboxSeriesX_B\" name=\"XboxSeriesX_B\"> to crouch",
+			"fontSize": 24
 		}
 	]
 }

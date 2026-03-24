@@ -3,8 +3,8 @@
 		{
 			"name": "Tutorial",
 			"icon": "None",
-			"text": "Press and hold <sprite="SwitchSprites/Switch_A" name="Switch_A"> to crouch",
-			"fontSize": 24 // This might be too small
+			"text": "Press and hold <sprite=\"SwitchSprites/Switch_A\" name=\"Switch_A\"> to crouch",
+			"fontSize": 24
 		}
 	]
 }

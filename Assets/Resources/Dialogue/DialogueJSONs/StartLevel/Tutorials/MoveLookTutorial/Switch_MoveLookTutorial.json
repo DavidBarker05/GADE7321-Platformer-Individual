@@ -3,8 +3,8 @@
 		{
 			"name": "Tutorial",
 			"icon": "None",
-			"text": "Use <sprite="SwitchSprites/Switch_Left_Stick" name="Switch_Left_Stick"> to move and <sprite="SwitchSprites/Switch_Right_Stick" name="Switch_Right_Stick"> to rotate the camera",
-			"fontSize": 24 // This might be too small
+			"text": "Use <sprite=\"SwitchSprites/Switch_Left_Stick\" name=\"Switch_Left_Stick\"> to move and <sprite=\"SwitchSprites/Switch_Right_Stick\" name=\"Switch_Right_Stick\"> to rotate the camera",
+			"fontSize": 24
 		}
 	]
 }

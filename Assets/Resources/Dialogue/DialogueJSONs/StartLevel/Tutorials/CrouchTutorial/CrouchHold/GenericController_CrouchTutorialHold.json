@@ -3,8 +3,8 @@
 		{
 			"name": "Tutorial",
 			"icon": "None",
-			"text": "Press and hold <sprite="GenericControllerSprites/Positional_Prompts_Right" name="Positional_Prompts_Right"> to crouch",
-			"fontSize": 24 // This might be too small
+			"text": "Press and hold <sprite=\"GenericControllerSprites/Positional_Prompts_Right\" name=\"Positional_Prompts_Right\"> to crouch",
+			"fontSize": 24
 		}
 	]
 }

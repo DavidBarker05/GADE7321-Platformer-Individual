@@ -3,8 +3,8 @@
 		{
 			"name": "Tutorial",
 			"icon": "None",
-			"text": "Press <sprite="KeyboardAndMouseSprites/C_Key_Dark" name="C_Key_Dark"> to toggle crouch",
-			"fontSize": 24 // This might be too small
+			"text": "Press <sprite=\"KeyboardAndMouseSprites/C_Key_Dark\" name=\"C_Key_Dark\"> to toggle crouch",
+			"fontSize": 24
 		}
 	]
 }

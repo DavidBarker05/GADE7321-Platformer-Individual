@@ -3,8 +3,8 @@
 		{
 			"name": "Tutorial",
 			"icon": "None",
-			"text": "Use <sprite="XInputSprites/XboxSeriesX_Left_Stick" name="XboxSeriesX_Left_Stick"> to move and <sprite="XInputSprites/XboxSeriesX_Right_Stick" name="XboxSeriesX_Right_Stick"> to rotate the camera",
-			"fontSize": 24 // This might be too small
+			"text": "Use <sprite=\"XInputSprites/XboxSeriesX_Left_Stick\" name=\"XboxSeriesX_Left_Stick\"> to move and <sprite=\"XInputSprites/XboxSeriesX_Right_Stick\" name=\"XboxSeriesX_Right_Stick\"> to rotate the camera",
+			"fontSize": 24
 		}
 	]
 }

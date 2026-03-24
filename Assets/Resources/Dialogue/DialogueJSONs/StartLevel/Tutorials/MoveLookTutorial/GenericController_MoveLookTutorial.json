@@ -3,8 +3,8 @@
 		{
 			"name": "Tutorial",
 			"icon": "None",
-			"text": "Use <sprite="GenericControllerSprites/360_Left_Stick" name="360_Left_Stick"> to move and <sprite="GenericControllerSprites/360_Right_Stick" name="360_Right_Stick"> to rotate the camera",
-			"fontSize": 24 // This might be too small
+			"text": "Use <sprite=\"GenericControllerSprites/360_Left_Stick\" name=\"360_Left_Stick\"> to move and <sprite=\"GenericControllerSprites/360_Right_Stick\" name=\"360_Right_Stick\"> to rotate the camera",
+			"fontSize": 24
 		}
 	]
 }
