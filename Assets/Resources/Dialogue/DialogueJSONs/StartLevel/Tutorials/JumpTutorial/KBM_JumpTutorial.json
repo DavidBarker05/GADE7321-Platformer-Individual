@@ -3,7 +3,8 @@
 		{
 			"name": "Tutorial",
 			"icon": "None",
-			"text": "Press <sprite="KeyboardAndMouseSprites/Space_Key_Dark" name="Space_Key_Dark"> to jump"
+			"text": "Press <sprite="KeyboardAndMouseSprites/Space_Key_Dark" name="Space_Key_Dark"> to jump",
+			"fontSize": 24 // This might be too small
 		}
 	]
 }

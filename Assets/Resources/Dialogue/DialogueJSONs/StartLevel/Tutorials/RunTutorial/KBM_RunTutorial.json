@@ -3,7 +3,8 @@
 		{
 			"name": "Tutorial",
 			"icon": "None",
-			"text": "Press and hold <sprite="KeyboardAndMouseSprites/Shift_Key_Dark" name="Shift_Key_Dark"> to run"
+			"text": "Press and hold <sprite="KeyboardAndMouseSprites/Shift_Key_Dark" name="Shift_Key_Dark"> to run",
+			"fontSize": 24 // This might be too small
 		}
 	]
 }

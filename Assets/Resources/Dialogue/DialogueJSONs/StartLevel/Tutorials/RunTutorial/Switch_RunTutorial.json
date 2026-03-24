@@ -3,7 +3,8 @@
 		{
 			"name": "Tutorial",
 			"icon": "None",
-			"text": "Press and hold <sprite="SwitchSprites/Switch_Left_Stick_Click" name="Switch_Left_Stick_Click"> to run"
+			"text": "Press and hold <sprite="SwitchSprites/Switch_Left_Stick_Click" name="Switch_Left_Stick_Click"> to run",
+			"fontSize": 24 // This might be too small
 		}
 	]
 }

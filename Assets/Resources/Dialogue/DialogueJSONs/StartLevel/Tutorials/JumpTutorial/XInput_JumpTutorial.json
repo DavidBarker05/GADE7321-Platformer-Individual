@@ -3,7 +3,8 @@
 		{
 			"name": "Tutorial",
 			"icon": "None",
-			"text": "Press <sprite="XInputSprites/XboxSeriesX_A" name="XboxSeriesX_A"> to jump"
+			"text": "Press <sprite="XInputSprites/XboxSeriesX_A" name="XboxSeriesX_A"> to jump",
+			"fontSize": 24 // This might be too small
 		}
 	]
 }

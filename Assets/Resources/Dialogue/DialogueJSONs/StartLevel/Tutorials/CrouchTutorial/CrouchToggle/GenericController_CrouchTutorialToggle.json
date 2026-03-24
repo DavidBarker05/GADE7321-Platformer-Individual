@@ -3,7 +3,8 @@
 		{
 			"name": "Tutorial",
 			"icon": "None",
-			"text": "Press <sprite="GenericControllerSprites/Positional_Prompts_Right" name="Positional_Prompts_Right"> to toggle crouch"
+			"text": "Press <sprite="GenericControllerSprites/Positional_Prompts_Right" name="Positional_Prompts_Right"> to toggle crouch",
+			"fontSize": 24 // This might be too small
 		}
 	]
 }

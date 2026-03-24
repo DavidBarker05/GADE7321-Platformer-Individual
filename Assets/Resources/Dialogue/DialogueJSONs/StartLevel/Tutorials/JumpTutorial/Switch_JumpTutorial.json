@@ -3,7 +3,8 @@
 		{
 			"name": "Tutorial",
 			"icon": "None",
-			"text": "Press <sprite="SwitchSprites/Switch_B" name="Switch_B"> to jump"
+			"text": "Press <sprite="SwitchSprites/Switch_B" name="Switch_B"> to jump",
+			"fontSize": 24 // This might be too small
 		}
 	]
 }
