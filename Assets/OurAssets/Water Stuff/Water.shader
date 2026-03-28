@@ -9,6 +9,7 @@ Shader "Custom/Water"
         _WaveAmplitude("Wave Amplitude", Range(0, 1)) = 0.25
         _WaveSpeed("Wave Speed", Range(0, 10)) = 1
         _WaveFrequency("Wave Frequency", Range(0, 10)) = 1
+        [HideInInspector] _GlobalWaterTime("Global Water Time", Float) = 0
 
         _SpecularSpeed("Specular Speed", Range(0, 10)) = 0.5
         _SpecularDensity("Specular Density", Range(0, 10)) = 3
@@ -116,6 +117,7 @@ Shader "Custom/Water"
                 float _WaveAmplitude;
                 float _WaveSpeed;
                 float _WaveFrequency;
+                float _GlobalWaterTime;
 
                 float _SpecularSpeed;
                 float _SpecularDensity;
@@ -181,7 +183,7 @@ Shader "Custom/Water"
                 ZERO_INITIALIZE(Varyings, OUT);
                 float3 positionWS = PATCH[0].positionWS * BARYCENTRIC_COORDINATES.x + PATCH[1].positionWS * BARYCENTRIC_COORDINATES.y + PATCH[2].positionWS * BARYCENTRIC_COORDINATES.z;
                 float2 uv = PATCH[0].uv * BARYCENTRIC_COORDINATES.x + PATCH[1].uv * BARYCENTRIC_COORDINATES.y + PATCH[2].uv * BARYCENTRIC_COORDINATES.z;
-                float waveHeight = sin(positionWS.x * _WaveFrequency + positionWS.z * _WaveFrequency + _Time.y * _WaveSpeed) * _WaveAmplitude;
+                float waveHeight = sin(positionWS.x * _WaveFrequency + positionWS.z * _WaveFrequency + _GlobalWaterTime * _WaveSpeed) * _WaveAmplitude;
                 float3 newPositionWS = float3(positionWS.x, positionWS.y + waveHeight, positionWS.z);
                 OUT.positionHCS = TransformWorldToHClip(newPositionWS);
                 OUT.uv = uv;
