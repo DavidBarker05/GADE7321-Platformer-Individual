@@ -17,6 +17,9 @@ public class CheckpointManager : MonoBehaviour
         }
     }
 
+    [SerializeField]
+    DeathScreen deathScreen;
+
     readonly StackADT<Checkpoint> checkpointStack = new StackADT<Checkpoint>();
 
     PlayerRespawner _player;
@@ -73,9 +76,6 @@ public class CheckpointManager : MonoBehaviour
             Transform respawnPoint = checkpointStack.Peek().RespawnPoint;
             Player.Respawn(respawnPoint);
         }
-        else // Else die
-        {
-            // Death Screen
-        }
+        else deathScreen.gameObject.SetActive(true); // Else die
     }
 }
