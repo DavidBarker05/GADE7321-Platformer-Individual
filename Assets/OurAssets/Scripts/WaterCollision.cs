@@ -1,4 +1,9 @@
+using Unity.Burst;
+using Unity.Collections;
+using Unity.Jobs;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Jobs;
 
 public class WaterCollision : MonoBehaviour
 {
@@ -23,8 +28,11 @@ public class WaterCollision : MonoBehaviour
     int waveKernelIndex;
 
     Vector3[] initialPoints;
-    SphereCollider[] collisionPoints;
+    Transform[] collisionPoints;
+    TransformAccessArray collisionAccessArray;
     Vector3[] modifiedPoints;
+
+    bool hasGeneratedAllColliders = false;
 
     void Awake()
     {
@@ -35,17 +43,19 @@ public class WaterCollision : MonoBehaviour
         InitBuffer();
         initialPoints = new Vector3[numVectors];
         GeneratePoints(ref initialPoints);
-        collisionPoints = new SphereCollider[numVectors];
+        collisionPoints = new Transform[numVectors];
         GenerateCollisionPoints(ref collisionPoints, ref initialPoints);
+        collisionAccessArray = new TransformAccessArray(collisionPoints);
         modifiedPoints = new Vector3[numVectors];
+        hasGeneratedAllColliders = true;
     }
 
     void LateUpdate()
     {
-        if (Time.frameCount % doEveryNthFrame != 0) return;
+        if (!hasGeneratedAllColliders || Time.frameCount % doEveryNthFrame != 0) return;
         transform.position = new Vector3(playerTransform.position.x, transform.position.y, playerTransform.position.z);
         UpdateWave(ref initialPoints, ref modifiedPoints);
-        UpdateCollisionPointsPositions(ref collisionPoints, ref modifiedPoints);
+        UpdateCollisionPointsPositions(ref collisionAccessArray, ref modifiedPoints);
     }
 
     void OnDisable() => DeleteBuffer();
@@ -55,7 +65,11 @@ public class WaterCollision : MonoBehaviour
         if (vectorBuffer == null) InitBuffer();
     }
 
-    void OnDestroy() => DeleteBuffer();
+    void OnDestroy()
+    {
+        DeleteBuffer();
+        if (collisionAccessArray.isCreated) collisionAccessArray.Dispose();
+    }
 
     void InitBuffer()
     {
@@ -85,14 +99,17 @@ public class WaterCollision : MonoBehaviour
         vectorBufferData.CopyTo(points, 0);
     }
 
-    void GenerateCollisionPoints(ref SphereCollider[] colliders, ref Vector3[] points)
+    void GenerateCollisionPoints(ref Transform[] transforms, ref Vector3[] points)
     {
-        for (int i = 0; i < colliders.Length; ++i)
+        for (int i = 0; i < transforms.Length; ++i)
         {
-            colliders[i] = gameObject.AddComponent<SphereCollider>();
-            colliders[i].center = points[i];
-            colliders[i].radius = size / resolution / 2;
-            colliders[i].isTrigger = true;
+            GameObject go = new GameObject($"CollisionPoint ({i})");
+            go.transform.parent = transform;
+            go.transform.localPosition = points[i];
+            SphereCollider sc = go.AddComponent<SphereCollider>();
+            sc.radius = size / resolution / 2;
+            sc.isTrigger = true;
+            transforms[i] = go.transform;
         }
     }
 
@@ -111,11 +128,27 @@ public class WaterCollision : MonoBehaviour
         vectorBufferData.CopyTo(resultantPoints, 0);
     }
 
-    void UpdateCollisionPointsPositions(ref SphereCollider[] colliders, ref Vector3[] newPositions)
+    void UpdateCollisionPointsPositions(ref TransformAccessArray accessArray, ref Vector3[] newPositions)
     {
-        for (int i = 0; i < colliders.Length; ++i)
+        NativeArray<Vector3> nativeVectors = new NativeArray<Vector3>(newPositions, Allocator.TempJob);
+        NativeArray<float3> nativeFloats = nativeVectors.Reinterpret<float3>();
+        UpdateCollidersJob job = new UpdateCollidersJob()
         {
-            colliders[i].center = newPositions[i];
-        }
+            newPositionsArray = nativeFloats
+        };
+        JobHandle jobHandle = job.Schedule(accessArray);
+        jobHandle.Complete();
+        if (nativeVectors.IsCreated) nativeVectors.Dispose();
+    }
+}
+
+[BurstCompile]
+public struct UpdateCollidersJob : IJobParallelForTransform
+{
+    [ReadOnly] public NativeArray<float3> newPositionsArray;
+
+    public void Execute(int index, TransformAccess transform)
+    {
+        transform.position = newPositionsArray[index];
     }
 }
