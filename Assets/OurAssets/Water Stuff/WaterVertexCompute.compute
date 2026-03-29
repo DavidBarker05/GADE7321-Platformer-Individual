@@ -1,7 +1,10 @@
-#pragma kernel CSMain
+#pragma kernel GeneratePoints
+#pragma kernel UpdateWave
 
 RWStructuredBuffer<float3> VectorBuffer;
 uint VectorCount;
+
+float Size;
 
 float3 WorldOffset;
 
@@ -10,8 +13,20 @@ float WaveSpeed;
 float WaveFrequency;
 float WaterTime;
 
-[numthreads(64,1,1)]
-void CSMain (uint3 id : SV_DispatchThreadID)
+[numthreads(8, 8, 1)]
+void GeneratePoints(uint3 id : SV_DispatchThreadID)
+{
+    uint resolution = sqrt(VectorCount);
+    if (id.y * resolution + id.x >= VectorCount) return;
+    float xPos = id.x * Size / float(resolution - 1) - Size / 2.0f;
+    float yPos = 0;
+    float zPos = id.y * Size / float(resolution - 1) - Size / 2.0f;
+    float3 position = float3(xPos, yPos, zPos);
+    VectorBuffer[id.y * resolution + id.x] = position;
+}
+
+[numthreads(64, 1, 1)]
+void UpdateWave(uint3 id : SV_DispatchThreadID)
 {
     if (id.x >= VectorCount) return;
     float3 vec = VectorBuffer[id.x];

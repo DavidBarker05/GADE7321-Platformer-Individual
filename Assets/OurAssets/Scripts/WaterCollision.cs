@@ -15,81 +15,74 @@ public class WaterCollision : MonoBehaviour
 
     ComputeBuffer vectorBuffer;
     Vector3[] vectorBufferData;
-    int kernelIndex;
-    Vector3[] baseVectors;
-    Vector3[] modifiedVectors;
+
+    int numVectors;
+    int stride;
+
+    int generationKernelIndex;
+    int waveKernelIndex;
+
+    Vector3[] initialPoints;
     SphereCollider[] collisionPoints;
+    Vector3[] modifiedPoints;
 
     void Awake()
     {
-        baseVectors = GeneratePoints();
-        modifiedVectors = new Vector3[baseVectors.Length];
-        collisionPoints = new SphereCollider[baseVectors.Length];
-        GenerateCollisionPoints(ref collisionPoints, ref baseVectors);
-        kernelIndex = waterCompShader.FindKernel("CSMain");
-        if (vectorBuffer == null) InitBuffer();
-    }
-
-    void OnDisable()
-    {
-        vectorBuffer?.Release();
-        vectorBuffer = null;
-    }
-
-    void OnEnable()
-    {
-        if (baseVectors != null && vectorBuffer == null) InitBuffer();
-    }
-
-    void OnDestroy()
-    {
-        vectorBuffer?.Release();
-        vectorBuffer = null;
+        numVectors = resolution * resolution;
+        stride = 3 * sizeof(float);
+        generationKernelIndex = waterCompShader.FindKernel("GeneratePoints");
+        waveKernelIndex = waterCompShader.FindKernel("UpdateWave");
+        InitBuffer();
+        initialPoints = new Vector3[numVectors];
+        GeneratePoints(ref initialPoints);
+        collisionPoints = new SphereCollider[numVectors];
+        GenerateCollisionPoints(ref collisionPoints, ref initialPoints);
+        modifiedPoints = new Vector3[numVectors];
     }
 
     void LateUpdate()
     {
         if (Time.frameCount % doEveryNthFrame != 0) return;
-        transform.position = new Vector3(playerTransform.position.x, 0f, playerTransform.position.z);
-        baseVectors.CopyTo(vectorBufferData, 0);
-        vectorBuffer.SetData(vectorBufferData);
-        waterCompShader.SetVector("WorldOffset", transform.position);
-        waterCompShader.SetFloat("WaveAmplitude", WaterWaveManager.Instance.WaveAmplitude);
-        waterCompShader.SetFloat("WaveSpeed", WaterWaveManager.Instance.WaveSpeed);
-        waterCompShader.SetFloat("WaveFrequency", WaterWaveManager.Instance.WaveFrequency);
-        waterCompShader.SetFloat("WaterTime", WaterWaveManager.Instance.WaterTime);
-        int threadGroups = Mathf.CeilToInt(baseVectors.Length / 64f);
-        waterCompShader.Dispatch(kernelIndex, threadGroups, 1, 1);
-        vectorBuffer.GetData(vectorBufferData);
-        vectorBufferData.CopyTo(modifiedVectors, 0);
-        UpdateCollisionPointsPositions(ref collisionPoints, ref modifiedVectors);
+        transform.position = new Vector3(playerTransform.position.x, transform.position.y, playerTransform.position.z);
+        UpdateWave(ref initialPoints, ref modifiedPoints);
+        UpdateCollisionPointsPositions(ref collisionPoints, ref modifiedPoints);
     }
 
-    Vector3[] GeneratePoints()
+    void OnDisable() => DeleteBuffer();
+
+    void OnEnable()
     {
-        Vector3[] vertices = new Vector3[resolution * resolution];
-        for (int z = 0; z < resolution; ++z)
-        {
-            for (int x = 0; x < resolution; ++x)
-            {
-                float xPos = x * size / (resolution - 1) - size / 2f;
-                float yPos = 0f;
-                float zPos = z * size / (resolution - 1) - size / 2f;
-                vertices[z * resolution + x] = new Vector3(xPos, yPos, zPos);
-            }
-        }
-        return vertices;
+        if (vectorBuffer == null) InitBuffer();
     }
+
+    void OnDestroy() => DeleteBuffer();
 
     void InitBuffer()
     {
         vectorBuffer?.Release();
-        vectorBufferData = new Vector3[baseVectors.Length];
-        baseVectors.CopyTo(vectorBufferData, 0);
-        vectorBuffer = new ComputeBuffer(baseVectors.Length, 3 * sizeof(float));
+        vectorBuffer = new ComputeBuffer(numVectors, stride);
+        vectorBufferData = new Vector3[numVectors];
+        waterCompShader.SetBuffer(generationKernelIndex, "VectorBuffer", vectorBuffer);
+        waterCompShader.SetBuffer(waveKernelIndex, "VectorBuffer", vectorBuffer);
         vectorBuffer.SetData(vectorBufferData);
-        waterCompShader.SetBuffer(kernelIndex, "VectorBuffer", vectorBuffer);
-        waterCompShader.SetInt("VectorCount", baseVectors.Length);
+        waterCompShader.SetInt("VectorCount", numVectors);
+    }
+
+    void DeleteBuffer()
+    {
+        vectorBuffer?.Release();
+        vectorBuffer = null;
+    }
+
+    void GeneratePoints(ref Vector3[] points)
+    {
+        waterCompShader.SetFloat("Size", size);
+        int threadGroups = Mathf.CeilToInt(resolution / 8f);
+        vectorBufferData = new Vector3[numVectors];
+        vectorBuffer.SetData(vectorBufferData);
+        waterCompShader.Dispatch(generationKernelIndex, threadGroups, threadGroups, 1);
+        vectorBuffer.GetData(vectorBufferData);
+        vectorBufferData.CopyTo(points, 0);
     }
 
     void GenerateCollisionPoints(ref SphereCollider[] colliders, ref Vector3[] points)
@@ -101,6 +94,21 @@ public class WaterCollision : MonoBehaviour
             colliders[i].radius = size / resolution / 2;
             colliders[i].isTrigger = true;
         }
+    }
+
+    void UpdateWave(ref Vector3[] initialPoints, ref Vector3[] resultantPoints)
+    {
+        initialPoints.CopyTo(vectorBufferData, 0);
+        vectorBuffer.SetData(vectorBufferData);
+        waterCompShader.SetVector("WorldOffset", transform.position);
+        waterCompShader.SetFloat("WaveAmplitude", WaterWaveManager.Instance.WaveAmplitude);
+        waterCompShader.SetFloat("WaveSpeed", WaterWaveManager.Instance.WaveSpeed);
+        waterCompShader.SetFloat("WaveFrequency", WaterWaveManager.Instance.WaveFrequency);
+        waterCompShader.SetFloat("WaterTime", WaterWaveManager.Instance.WaterTime);
+        int threadGroups = Mathf.CeilToInt(numVectors / 64f);
+        waterCompShader.Dispatch(waveKernelIndex, threadGroups, 1, 1);
+        vectorBuffer.GetData(vectorBufferData);
+        vectorBufferData.CopyTo(resultantPoints, 0);
     }
 
     void UpdateCollisionPointsPositions(ref SphereCollider[] colliders, ref Vector3[] newPositions)
