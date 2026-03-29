@@ -10,12 +10,21 @@ public class EndDialogueTrigger : DialogueTrigger
     [SerializeField]
     int nextSceneIndex = -1;
 
+    protected bool EndConditionSingletonsAreValid => CollectableManager.Instance;
+    protected bool EndConditionsAreMet => CollectableManager.Instance.HasEnoughItems;
+
+    PlayerMovement player;
+
     protected override void OnTriggerEnter(Collider other)
     {
         Debug.Assert(CollectableManager.Instance, "CollectableManger must exist in the scene");
-        if (!other.CompareTag("Player") || !CollectableManager.Instance) return;
-        if (CollectableManager.Instance.HasEnoughItems) GetComponent<DialogueHolder>().StartDialogue(endDialogue, EndOfLevelFunction);
-        else GetComponent<DialogueHolder>().StartDialogue(notEnoughItems, MovePlayerOffFinalPlatform);
+        if (!other.CompareTag("Player") || !EndConditionSingletonsAreValid) return;
+        if (EndConditionsAreMet) GetComponent<DialogueHolder>().StartDialogue(endDialogue, EndOfLevelFunction);
+        else
+        {
+            player = other.gameObject.GetComponent<PlayerMovement>();
+            GetComponent<DialogueHolder>().StartDialogue(notEnoughItems, ResetPlayerToLastStableGround);
+        }
     }
 
     protected void EndOfLevelFunction()
@@ -32,9 +41,5 @@ public class EndDialogueTrigger : DialogueTrigger
         }
     }
 
-    protected void MovePlayerOffFinalPlatform()
-    {
-        // TODO: move player off end of final platform. Maybe I keep track of last ground position?
-        // Or maybe respawn at checkpoint?
-    }
+    protected void ResetPlayerToLastStableGround() => player?.ResetToLastStableGround();
 }

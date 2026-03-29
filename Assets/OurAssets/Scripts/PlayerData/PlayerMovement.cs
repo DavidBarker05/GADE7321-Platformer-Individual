@@ -38,6 +38,9 @@ public class PlayerMovement : MonoBehaviour
 
     Transform startingParent; // David added
 
+    Transform lastStableGround; // David added
+    Vector3 stableGroundOffset; // David added
+
     void Awake()
     {
         // David - Moved get component to awake because it's better to do here
@@ -78,6 +81,14 @@ public class PlayerMovement : MonoBehaviour
             hitInfo: out RaycastHit hit,
             maxDistance: groundDistance,
             layerMask: groundMask);
+
+        // David - Set last stable ground if we're grounded and can move so can teleport back
+        // if needed
+        if (isGrounded && canMove)
+        {
+            lastStableGround = transform.parent;
+            stableGroundOffset = transform.position - lastStableGround.position;
+        }
 
         // David - I think I added this to my previous character controllers to reset
         // velocity being too negative from gravity but also to make sure the character
@@ -163,6 +174,14 @@ public class PlayerMovement : MonoBehaviour
 
     // David - Added ability to be able to disable input (when dialogue starts)
     public void DisableMovement() => canMove = false;
+
+    // David - Reset the player to the last stable ground
+    public void ResetToLastStableGround()
+    {
+        moveDirection = Vector3.up * -1f;
+        transform.parent = lastStableGround;
+        transform.position = lastStableGround.position + stableGroundOffset;
+    }
 
     // got rid of floating issue.
 }
