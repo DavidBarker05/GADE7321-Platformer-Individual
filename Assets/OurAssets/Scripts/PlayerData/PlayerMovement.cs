@@ -36,6 +36,8 @@ public class PlayerMovement : MonoBehaviour
     Vector2 MoveInput => InputSystem.actions.FindAction("Move").ReadValue<Vector2>(); // David added
     bool crouchToggle = true; // David added (can maybe add a setting for players)
 
+    Transform startingParent; // David added
+
     void Awake()
     {
         // David - Moved get component to awake because it's better to do here
@@ -47,6 +49,7 @@ public class PlayerMovement : MonoBehaviour
         InputSystem.actions.FindAction("Run").canceled += RunEnd;
         InputSystem.actions.FindAction("Crouch").started += CrouchStart;
         InputSystem.actions.FindAction("Crouch").canceled += CrouchEnd;
+        startingParent = transform.parent; // David added
     }
 
     // David added
@@ -142,6 +145,18 @@ public class PlayerMovement : MonoBehaviour
     // is off then the player will always stop crouching, if crouchToggle is on then
     // isCrouching remains the same
     void CrouchEnd(InputAction.CallbackContext ctx) => isCrouching = crouchToggle && isCrouching;
+
+    // David - Attach the player to the platform so that it follows the movement of the
+    // platform
+    public void AttachToPlatform(Transform platform) => transform.parent = platform;
+
+    // David - Detach the player from the platform so that it stops following the movement
+    // of the platform, but only do this if the parent is the platform we want to detach
+    // from
+    public void DetachFromPlatform(Transform platform)
+    {
+        if (transform.parent == platform) transform.parent = startingParent;
+    }
 
     // got rid of floating issue.
 }
