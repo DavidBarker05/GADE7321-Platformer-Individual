@@ -59,7 +59,7 @@
 		{
 			"name": "Comms Device",
 			"icon": "comms",
-			"text": "<i><STATIC>...Yo...<STATIC>...l...<STATIC>...t...<STATIC>...w...<STATIC>...k...<STATIC></i>",
+			"text": "<i><STATIC>...Yo...<STATIC>...l...<STATIC>...s...<STATIC>...w...<STATIC>...k...<STATIC></i>",
 			"fontSize": 24,
 			"charactersPerSecond": 60
 		},
