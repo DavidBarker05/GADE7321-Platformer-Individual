@@ -1,0 +1,95 @@
+{
+	"dialogueItems": [
+		{
+			"name": "Story",
+			"icon": "None",
+			"text": "<i>Merzp finally collects all pieces after some intense parkour</i>",
+			"fontSize": 24,
+			"charactersPerSecond": 60
+		},
+		{
+			"name": "Merzp",
+			"icon": "None",
+			"text": "Finally I have it all.",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		},
+		{
+			"name": "Story",
+			"icon": "None",
+			"text": "<i>Merzp builds the comm device and tries once more</i>",
+			"fontSize": 24,
+			"charactersPerSecond": 60
+		},
+		{
+			"name": "Merzp",
+			"icon": "None",
+			"text": "Does anyone copy?",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		},
+		{
+			"name": "Story",
+			"icon": "None",
+			"text": "<i>There is a faint whisper through the static</i>",
+			"fontSize": 24,
+			"charactersPerSecond": 60
+		},
+		{
+			"name": "Comms Device",
+			"icon": "None",
+			"text": "<i><STATIC>...H...<STATIC>...i...<STATIC>...t...<STATIC>...s...<STATIC></i>",
+			"fontSize": 24,
+			"charactersPerSecond": 60
+		},
+		{
+			"name": "Merzp",
+			"icon": "None",
+			"text": "Hello, hello? Can you hear me?",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		},
+		{
+			"name": "Story",
+			"icon": "None",
+			"text": "<i>More unintelligible speech is pushed through</i>",
+			"fontSize": 24,
+			"charactersPerSecond": 60
+		},
+		{
+			"name": "Comms Device",
+			"icon": "None",
+			"text": "<i><STATIC>...Yo...<STATIC>...l...<STATIC>...t...<STATIC>...w...<STATIC>...k...<STATIC></i>",
+			"fontSize": 24,
+			"charactersPerSecond": 60
+		},
+		{
+			"name": "Merzp",
+			"icon": "None",
+			"text": "I need a signal booster, but I need…",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		},
+		{
+			"name": "Story",
+			"icon": "None",
+			"text": "<i>She looks out into the distance and sees land</i>",
+			"fontSize": 24,
+			"charactersPerSecond": 60
+		},
+		{
+			"name": "Merzp",
+			"icon": "None",
+			"text": "Great Morpsalon, land! I can build a signal booster there!",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		},
+		{
+			"name": "Story",
+			"icon": "None",
+			"text": "<i>Merzp ventures to the land by tearing apart her ship to get there</i>",
+			"fontSize": 24,
+			"charactersPerSecond": 60
+		}
+	]
+}

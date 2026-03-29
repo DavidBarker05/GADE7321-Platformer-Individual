@@ -1,0 +1,144 @@
+{
+	"dialogueItems": [
+		{
+			"name": "Story",
+			"icon": "None",
+			"text": "<i>Alien crashes into vast ocean</i>",
+			"fontSize": 24,
+			"charactersPerSecond": 60
+		},
+		{
+			"name": "Alien",
+			"icon": "None",
+			"text": "Where in the morp am I?",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		},
+		{
+			"name": "Alien",
+			"icon": "None",
+			"text": "Merzp to command, come in command, over.",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		},
+		{
+			"name": "Comms Device",
+			"icon": "None",
+			"text": "<i><STATIC></i>",
+			"fontSize": 24,
+			"charactersPerSecond": -1
+		},
+		{
+			"name": "Story",
+			"icon": "None",
+			"text": "<i>Static is her only reply</i>",
+			"fontSize": 24,
+			"charactersPerSecond": 60
+		},
+		{
+			"name": "Merzp",
+			"icon": "None",
+			"text": "Merzp to command, come in command, over.",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		},
+		{
+			"name": "Comms Device",
+			"icon": "None",
+			"text": "<i><STATIC></i>",
+			"fontSize": 24,
+			"charactersPerSecond": -1
+		},
+		{
+			"name": "Story",
+			"icon": "None",
+			"text": "<i>Static continues to keep her company</i>",
+			"fontSize": 24,
+			"charactersPerSecond": 60
+		},
+		{
+			"name": "Merzp",
+			"icon": "None",
+			"text": "Hello is anyone there? My name is Merzp and I have crashed on my expedition of the Verpa Quadrant and I have crashed on an unknown planet.",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		},
+		{
+			"name": "Comms Device",
+			"icon": "None",
+			"text": "<i><STATIC></i>",
+			"fontSize": 24,
+			"charactersPerSecond": -1
+		},
+		{
+			"name": "Story",
+			"icon": "None",
+			"text": "<i>The air is filled the cold reply of static once more</i>",
+			"fontSize": 24,
+			"charactersPerSecond": 60
+		},
+		{
+			"name": "Merzp",
+			"icon": "None",
+			"text": "Great, just great!",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		},
+		{
+			"name": "Story",
+			"icon": "None",
+			"text": "<i>Merzp checks her comms device and sees it is missing some components</i>",
+			"fontSize": 24,
+			"charactersPerSecond": 60
+		},
+		{
+			"name": "Merzp",
+			"icon": "None",
+			"text": "What in the fleep florp could have happened to this thing?",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		},
+		{
+			"name": "Story",
+			"icon": "None",
+			"text": "<i>Merzp assesses her surroundings and sees a piece of her comms device out in the ocean</i>",
+			"fontSize": 24,
+			"charactersPerSecond": 60
+		},
+		{
+			"name": "Merzp",
+			"icon": "None",
+			"text": "How meep morp wonderful, I have to go through the water just to get that piece!",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		},
+		{
+			"name": "Story",
+			"icon": "None",
+			"text": "<i>Merzp carefully scans the water with her suits built in scanner and discovers this water is no water at all as it has a PH level of 1</i>",
+			"fontSize": 24,
+			"charactersPerSecond": 60
+		},
+		{
+			"name": "Merzp",
+			"icon": "None",
+			"text": "Good thing my ship is acid proof. I just need to break pieces off of it as I can see more pieces of my device scattered all around here. Let me just…",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		},
+		{
+			"name": "Story",
+			"icon": "None",
+			"text": "<i>Merzp breaks pieces of the inside of her ship to throw into the ocean for her to jump to her other pieces</i>",
+			"fontSize": 24,
+			"charactersPerSecond": 60
+		},
+		{
+			"name": "Merzp",
+			"icon": "None",
+			"text": "I know I won’t be needing  this ship anymore so it’s doing one last thing for me.",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		}
+	]
+}

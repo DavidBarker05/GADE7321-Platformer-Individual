@@ -1,21 +1,21 @@
 {
 	"dialogueItems": [
 		{
-			"name": "CharacterNameHere",
+			"name": "Merzp",
 			"icon": "None",
-			"text": "I don't have all the pieces for the communications device.",
+			"text": "I don't have all the pieces for the comms device.",
 			"fontSize": 24,
 			"charactersPerSecond": 40
 		},
 		{
-			"name": "CharacterNameHere",
+			"name": "Merzp",
 			"icon": "None",
 			"text": "If I don't have all the pieces then I can't repair the device and I'll never be saved.",
 			"fontSize": 24,
 			"charactersPerSecond": 40
 		},
 		{
-			"name": "CharacterNameHere",
+			"name": "Merzp",
 			"icon": "None",
 			"text": "I need to go back...",
 			"fontSize": 24,
