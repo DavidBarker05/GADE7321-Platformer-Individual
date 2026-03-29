@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class CollectableManager : MonoBehaviour
@@ -15,6 +14,8 @@ public class CollectableManager : MonoBehaviour
     int TotalCollectables => collectablesSpawnTransforms.Length;
     int currentNumCollectables = 0;
 
+    public bool HasEnoughItems => currentNumCollectables >= TotalCollectables;
+
     void Awake()
     {
         if (Instance && Instance != this) Destroy(gameObject);
@@ -25,6 +26,6 @@ public class CollectableManager : MonoBehaviour
 
     public void CollectCollectable()
     {
-        if (++currentNumCollectables >= TotalCollectables) holder.StartDialogue(); 
+        if (++currentNumCollectables < TotalCollectables) holder.StartDialogue(); 
     }
 }

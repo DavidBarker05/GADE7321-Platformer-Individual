@@ -24,6 +24,8 @@ public class DialogueDisplayer : MonoBehaviour
     float secondsPerCharacter;
     float currentReadTime;
 
+    System.Action endCallbackFunction;
+
     void Awake()
     {
         nextButton.onClick.AddListener(
@@ -33,26 +35,14 @@ public class DialogueDisplayer : MonoBehaviour
             }
         );
         skipButton.onClick.AddListener(() => isFinishedWithCurrentItem = true );
-        skipAllButton.onClick.AddListener(() => gameObject.SetActive(false) );
-    }
-
-    void OnEnable()
-    {
-        RetrieveCurrentDialogue();
-        // TODO: Stop character from moving and looking
-    }
-
-    void OnDisable()
-    {
-        // TODO: Allow character to move and look again
-        // TODO: Somehow I need to do a scene transition later or end the scene for level end dialogue idk
+        skipAllButton.onClick.AddListener(() => StopDisplayingDialogue() );
     }
 
     void Update()
     {
         if (currentItem == null) // Will this ever happen? I'm gonna leave it in case
         {
-            gameObject.SetActive(false);
+            StopDisplayingDialogue();
             return;
         }
         if (isFinishedWithCurrentItem)
@@ -81,7 +71,7 @@ public class DialogueDisplayer : MonoBehaviour
         currentItem = DialogueManager.Instance.CurrentDialogueItem;
         if (currentItem == null)
         {
-            gameObject.SetActive(false);
+            StopDisplayingDialogue();
             return;
         }
         nextButton.gameObject.SetActive(false);
@@ -93,5 +83,21 @@ public class DialogueDisplayer : MonoBehaviour
         currentDialogueText = "";
         secondsPerCharacter = 1f / currentItem.charactersPerSecond;
         currentReadTime = 0f;
+    }
+
+    public void StartDisplayingDialogue(System.Action callbackFunction = null)
+    {
+        // TODO: Stop character from moving and looking
+        gameObject.SetActive(true);
+        RetrieveCurrentDialogue();
+        endCallbackFunction = callbackFunction;
+    }
+
+    void StopDisplayingDialogue()
+    {
+        // TODO: Allow character to move and look again
+        endCallbackFunction?.Invoke();
+        endCallbackFunction = null; // Clear the callback function (is this even needed since we set it to null on start? Idk I'll leave it to be safe)
+        gameObject.SetActive(false);
     }
 }
