@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(DialogueHolder))]
 public class CollectableManager : MonoBehaviour
 {
     public static CollectableManager Instance { get; private set; }
@@ -8,8 +9,6 @@ public class CollectableManager : MonoBehaviour
     Collectable collectablePrefab;
     [SerializeField, Tooltip("Length of array determines number of collectables for level")]
     Transform[] collectablesSpawnTransforms;
-    [SerializeField]
-    DialogueHolder holder;
 
     int TotalCollectables => collectablesSpawnTransforms.Length;
     int currentNumCollectables = 0;
@@ -26,6 +25,6 @@ public class CollectableManager : MonoBehaviour
 
     public void CollectCollectable()
     {
-        if (++currentNumCollectables >= TotalCollectables) holder.StartDialogue(); 
+        if (++currentNumCollectables >= TotalCollectables) GetComponent<DialogueHolder>().StartDialogue(); 
     }
 }
