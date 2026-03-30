@@ -5,7 +5,8 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Jobs;
 
-public class WaterCollision : MonoBehaviour
+[RequireComponent(typeof(Rigidbody))]
+public class WaterCollision : DeathBarrier
 {
     [SerializeField]
     Transform playerTransform;
@@ -33,6 +34,14 @@ public class WaterCollision : MonoBehaviour
     Vector3[] modifiedPoints;
 
     bool hasGeneratedAllColliders = false;
+    bool collidersAreNoLongerInDefaultPosition = false;
+    bool hasTriggeredThisFrame = false;
+
+    void OnValidate()
+    {
+        GetComponent<Rigidbody>().useGravity = false;
+        GetComponent<Rigidbody>().isKinematic = true;
+    }
 
     void Awake()
     {
@@ -56,6 +65,7 @@ public class WaterCollision : MonoBehaviour
         transform.position = new Vector3(playerTransform.position.x, transform.position.y, playerTransform.position.z);
         UpdateWave(ref initialPoints, ref modifiedPoints);
         UpdateCollisionPointsPositions(ref collisionAccessArray, ref modifiedPoints);
+        hasTriggeredThisFrame = false;
     }
 
     void OnDisable() => DeleteBuffer();
@@ -69,6 +79,13 @@ public class WaterCollision : MonoBehaviour
     {
         DeleteBuffer();
         if (collisionAccessArray.isCreated) collisionAccessArray.Dispose();
+    }
+
+    protected override void OnTriggerEnter(Collider other)
+    {
+        if (!collidersAreNoLongerInDefaultPosition || hasTriggeredThisFrame) return;
+        hasTriggeredThisFrame = true;
+        base.OnTriggerEnter(other);
     }
 
     void InitBuffer()
@@ -139,6 +156,7 @@ public class WaterCollision : MonoBehaviour
         JobHandle jobHandle = job.Schedule(accessArray);
         jobHandle.Complete();
         if (nativeVectors.IsCreated) nativeVectors.Dispose();
+        if (!collidersAreNoLongerInDefaultPosition) collidersAreNoLongerInDefaultPosition = true;
     }
 }
 
