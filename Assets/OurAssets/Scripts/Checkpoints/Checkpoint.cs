@@ -7,23 +7,18 @@ public class Checkpoint : MonoBehaviour
     bool isStart = false;
     [SerializeField]
     int startingLives = 0;
-    [SerializeField]
-    Transform respawnPoint = null;
-
-    public Transform RespawnPoint
-    {
-        get
-        {
-            respawnPoint ??= transform;
-            return respawnPoint;
-        }
-    }
+    [field: SerializeField]
+    public Transform RespawnPoint { get; private set; }
 
     public bool HasBeenCaptured { get; set; }
     public int Lives { get; set; }
     public int Score { get; set; }
 
-    void OnValidate() => GetComponent<Collider>().isTrigger = true; // Ensure collider is a trigger
+    void OnValidate()
+    {
+        GetComponent<Collider>().isTrigger = true; // Ensure collider is a trigger
+        if (!RespawnPoint) RespawnPoint = transform;
+    }
 
     void Start()
     {
