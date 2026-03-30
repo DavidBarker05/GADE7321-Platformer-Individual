@@ -8,7 +8,7 @@ public class Checkpoint : MonoBehaviour
     [SerializeField]
     int startingLives = 0;
     [SerializeField]
-    Transform respawnPoint;
+    Transform respawnPoint = null;
 
     public Transform RespawnPoint => respawnPoint ?? transform; // Ignore the unity warning it works fine despite what they say
 
