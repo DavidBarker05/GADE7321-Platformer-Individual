@@ -10,7 +10,14 @@ public class Checkpoint : MonoBehaviour
     [SerializeField]
     Transform respawnPoint = null;
 
-    public Transform RespawnPoint => respawnPoint ?? transform; // Ignore the unity warning it works fine despite what they say
+    public Transform RespawnPoint
+    {
+        get
+        {
+            respawnPoint ??= transform;
+            return respawnPoint;
+        }
+    }
 
     public bool HasBeenCaptured { get; set; }
     public int Lives { get; set; }
