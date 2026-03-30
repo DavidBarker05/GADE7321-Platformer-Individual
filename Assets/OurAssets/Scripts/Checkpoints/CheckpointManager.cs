@@ -78,4 +78,9 @@ public class CheckpointManager : MonoBehaviour
         }
         else deathScreen.gameObject.SetActive(true); // Else die
     }
+
+    public void AddScore(int score)
+    {
+        if (!checkpointStack.IsEmpty && score > 0) checkpointStack.Peek().Score += score;
+    }
 }
