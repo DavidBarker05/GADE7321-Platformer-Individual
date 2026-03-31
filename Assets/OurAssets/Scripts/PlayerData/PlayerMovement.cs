@@ -23,6 +23,10 @@ public class PlayerMovement : MonoBehaviour
     float turnSpeed = 6f; // David added
     [SerializeField, Min(0f)]
     float runTurnSpeed = 12f; // David added
+    [SerializeField, Range(0f, 1f)]
+    float coyoteTime = 0.2f; // David added
+    [SerializeField, Range(0f, 1f)]
+    float jumpBuffer = 0.1f; // David added
 
     bool isGrounded; // David added
 
@@ -41,28 +45,44 @@ public class PlayerMovement : MonoBehaviour
     Transform lastStableGround; // David added
     Vector3 stableGroundOffset; // David added
 
+    bool jumpInputWasPressed; // David added
+
+    bool isJumping; // David added
+    bool isFalling; // David added
+
+    float currentCoyoteTime; // David added
+    float currentJumpBuffer; // David added
+
     void Awake()
     {
         // David - Moved get component to awake because it's better to do here
         // compared to start
         characterController = GetComponent<CharacterController>();
+        #region Add Action Listeners
         // David - Work with new input system
-        InputSystem.actions.FindAction("Jump").started += Jump;
-        InputSystem.actions.FindAction("Run").started += RunStart;
-        InputSystem.actions.FindAction("Run").canceled += RunEnd;
-        InputSystem.actions.FindAction("Crouch").started += CrouchStart;
-        InputSystem.actions.FindAction("Crouch").canceled += CrouchEnd;
+        InputSystem.actions.FindAction("Jump").started += HandleJumpInput;
+        InputSystem.actions.FindAction("Jump").performed += HandleJumpInput;
+        InputSystem.actions.FindAction("Jump").canceled += HandleJumpInput;
+        InputSystem.actions.FindAction("Run").started += HandleRunInput;
+        InputSystem.actions.FindAction("Run").canceled += HandleRunInput;
+        InputSystem.actions.FindAction("Crouch").started += HandleCrouchInput;
+        InputSystem.actions.FindAction("Crouch").canceled += HandleCrouchInput;
+        #endregion
         startingParent = transform.parent; // David added
     }
 
     // David added
     void OnDestroy()
     {
-        InputSystem.actions.FindAction("Jump").started -= Jump;
-        InputSystem.actions.FindAction("Run").started -= RunStart;
-        InputSystem.actions.FindAction("Run").canceled -= RunEnd;
-        InputSystem.actions.FindAction("Crouch").started -= CrouchStart;
-        InputSystem.actions.FindAction("Crouch").canceled -= CrouchEnd;
+        #region Remove Action Listeners
+        InputSystem.actions.FindAction("Jump").started -= HandleJumpInput;
+        InputSystem.actions.FindAction("Jump").performed -= HandleJumpInput;
+        InputSystem.actions.FindAction("Jump").canceled -= HandleJumpInput;
+        InputSystem.actions.FindAction("Run").started -= HandleRunInput;
+        InputSystem.actions.FindAction("Run").canceled -= HandleRunInput;
+        InputSystem.actions.FindAction("Crouch").started -= HandleCrouchInput;
+        InputSystem.actions.FindAction("Crouch").canceled -= HandleCrouchInput;
+        #endregion
     }
 
     void Update()
@@ -80,20 +100,26 @@ public class PlayerMovement : MonoBehaviour
             direction: Vector3.down,
             hitInfo: out RaycastHit hit,
             maxDistance: groundDistance,
-            layerMask: groundMask);
+            layerMask: groundMask,
+            queryTriggerInteraction: QueryTriggerInteraction.Ignore);
 
         // David - Set last stable ground if we're grounded and can move so can teleport back
         // if needed
-        if (isGrounded && canMove)
+        if (canMove)
         {
-            lastStableGround = transform.parent;
-            stableGroundOffset = transform.position - lastStableGround.position;
+            if (isGrounded)
+            {
+                lastStableGround = transform.parent;
+                stableGroundOffset = transform.position - lastStableGround.position;
+                currentCoyoteTime = coyoteTime;
+            }
+            else
+            {
+                currentCoyoteTime -= Time.deltaTime;
+                currentJumpBuffer -= Time.deltaTime;
+            }
+            JumpChecks();
         }
-
-        // David - I think I added this to my previous character controllers to reset
-        // velocity being too negative from gravity but also to make sure the character
-        // controller gets pushed into the ground
-        if (isGrounded && moveDirection.y < 0f) moveDirection.y = -1f;
 
         // David - Use the camera target forward and right instead of player for movement
         Vector3 forward = new Vector3(cameraTarget.forward.x, 0f, cameraTarget.forward.z).normalized;
@@ -124,6 +150,7 @@ public class PlayerMovement : MonoBehaviour
             // changing it here did nothing since it was only applied to moveDirection.y
             // before here
             moveDirection.y -= gravity * Time.deltaTime;
+            if (moveDirection.y < 0f) isFalling = true;
         }
 
         // David - Shorter version of what Abhi wrote that also adjusts the centre since
@@ -134,28 +161,53 @@ public class PlayerMovement : MonoBehaviour
         characterController.Move(moveDirection * Time.deltaTime);
     }
 
+    #region Input Handling
     // David - Added jump function to work with new input system
-    void Jump(InputAction.CallbackContext ctx)
+    void HandleJumpInput(InputAction.CallbackContext ctx)
     {
-        // David - Jump to specific height
-        if (canMove && isGrounded) moveDirection.y = Mathf.Sqrt(2f * gravity * jumpHeight);
+        if (ctx.started || ctx.performed) jumpInputWasPressed = true;
+        else if (ctx.canceled) jumpInputWasPressed = false;
     }
 
-    // David - Added run start function to work with new input system
-    void RunStart(InputAction.CallbackContext ctx) => isRunning = true;
+    // David - Added run function to work with new input system
+    void HandleRunInput(InputAction.CallbackContext ctx)
+    {
+        if (ctx.started) isRunning = true;
+        else if (ctx.canceled) isRunning = false;
+    }
 
-    // David - Added run end function to work with new input system
-    void RunEnd(InputAction.CallbackContext ctx) => isRunning = false;
-
-    // David - Added crouch start function to work with new input system. If crouchToggle
+    // David - Added crouch start function to work with new input system. When started, if crouchToggle
     // is off then player will always start crouching, if crouchToggle is on then isCrouching
-    // toggles between true and false
-    void CrouchStart(InputAction.CallbackContext ctx) => isCrouching = !crouchToggle || !isCrouching;
+    // toggles between true and false. When canceled, if crouchToggle is off then the player will always stop
+    // crouching, if crouchToggle is on then isCrouching remains the same
+    void HandleCrouchInput(InputAction.CallbackContext ctx)
+    {
+        if (ctx.started) isCrouching = !crouchToggle || !isCrouching;
+        else if (ctx.canceled) isCrouching = crouchToggle && isCrouching;
+    }
+    #endregion
 
-    // David - Added crouch end function to work with new input system. If crouchToggle
-    // is off then the player will always stop crouching, if crouchToggle is on then
-    // isCrouching remains the same
-    void CrouchEnd(InputAction.CallbackContext ctx) => isCrouching = crouchToggle && isCrouching;
+    #region Jumping
+    void JumpChecks()
+    {
+        if (!canMove) return;
+        if (jumpInputWasPressed) currentJumpBuffer = jumpBuffer;
+        if (currentJumpBuffer > 0f && !isJumping && (isGrounded || currentCoyoteTime > 0f)) InitiateJump();
+        if ((isJumping || isFalling) && isGrounded && moveDirection.y < 0f)
+        {
+            isJumping = false;
+            isFalling = false;
+            moveDirection.y = -1f;
+        }
+    }
+
+    void InitiateJump()
+    {
+        isJumping = true;
+        currentJumpBuffer = 0f;
+        moveDirection.y = Mathf.Sqrt(2f * gravity * jumpHeight);
+    }
+    #endregion
 
     // David - Attach the player to the platform so that it follows the movement of the
     // platform
