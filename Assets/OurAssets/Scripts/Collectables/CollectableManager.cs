@@ -10,10 +10,10 @@ public class CollectableManager : MonoBehaviour
     [SerializeField, Tooltip("Length of array determines number of collectables for level")]
     Transform[] collectablesSpawnTransforms;
 
-    int TotalCollectables => collectablesSpawnTransforms.Length;
-    int currentNumCollectables = 0;
+    public int TotalCollectables => collectablesSpawnTransforms.Length;
+    public int CurrentNumCollectables { get; private set; } = 0;
 
-    public bool HasEnoughItems => currentNumCollectables >= TotalCollectables;
+    public bool HasEnoughItems => CurrentNumCollectables >= TotalCollectables;
 
     void Awake()
     {
@@ -25,6 +25,6 @@ public class CollectableManager : MonoBehaviour
 
     public void CollectCollectable()
     {
-        if (++currentNumCollectables >= TotalCollectables) GetComponent<DialogueHolder>().StartDialogue(); 
+        if (++CurrentNumCollectables >= TotalCollectables) GetComponent<DialogueHolder>().StartDialogue(); 
     }
 }
