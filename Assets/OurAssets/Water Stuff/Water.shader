@@ -22,6 +22,10 @@ Shader "Custom/Water"
         _TessellationAmount("Tessellation Amount", Range(1, 64)) = 1
         _TessellationFadeStart("Tessellation Fade Start", Float) = 25
         _TessellationFadeEnd("Tessellation Fade End", Float) = 50
+
+        _FoamCutoff("Foam Cutoff", Range(0, 1)) = 0.777
+        _FoamMaxDistance("Foam Maximum Distance", Float) = 0.4
+		_FoamMinDistance("Foam Minimum Distance", Float) = 0.04		
     }
 
     SubShader
@@ -44,6 +48,7 @@ Shader "Custom/Water"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Hashes.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareNormalsTexture.hlsl"
 
             float2 VoronoiRandomVectorDeterministic(float2 uv, float offset)
             {
@@ -107,6 +112,7 @@ Shader "Custom/Water"
                 float4 positionHCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
                 float4 positionSS : TEXCOORD1;
+                float3 normal : NORMAL;
             };
 
             CBUFFER_START(UnityPerMaterial)
@@ -130,6 +136,10 @@ Shader "Custom/Water"
                 float _TessellationAmount;
                 float _TessellationFadeStart;
                 float _TessellationFadeEnd;
+
+                float _FoamCutoff;
+                float _FoamMaxDistance;
+                float _FoamMinDistance;
             CBUFFER_END
 
             TessellationControlPoint vert(Attributes IN)
@@ -176,18 +186,32 @@ Shader "Custom/Water"
                 return OUT;
             };
 
+            float Wave(float3 positionWS)
+            {
+                return sin(positionWS.x * _WaveFrequency + positionWS.z * _WaveFrequency + _GlobalWaterTime * _WaveSpeed) * _WaveAmplitude;
+            }
+
             [domain("tri")]
             Varyings domain(TesselationFactors FACTORS, OutputPatch<TessellationControlPoint, 3> PATCH, float3 BARYCENTRIC_COORDINATES : SV_DomainLocation)
             {
                 Varyings OUT;
                 ZERO_INITIALIZE(Varyings, OUT);
+                float epsilon = 0.01;
                 float3 positionWS = PATCH[0].positionWS * BARYCENTRIC_COORDINATES.x + PATCH[1].positionWS * BARYCENTRIC_COORDINATES.y + PATCH[2].positionWS * BARYCENTRIC_COORDINATES.z;
                 float2 uv = PATCH[0].uv * BARYCENTRIC_COORDINATES.x + PATCH[1].uv * BARYCENTRIC_COORDINATES.y + PATCH[2].uv * BARYCENTRIC_COORDINATES.z;
-                float waveHeight = sin(positionWS.x * _WaveFrequency + positionWS.z * _WaveFrequency + _GlobalWaterTime * _WaveSpeed) * _WaveAmplitude;
-                float3 newPositionWS = float3(positionWS.x, positionWS.y + waveHeight, positionWS.z);
+                float3 newPositionWS = positionWS;
+                newPositionWS.y += Wave(newPositionWS);
+                float3 newPositionXWS = positionWS + float3(epsilon, 0, 0);
+                newPositionXWS.y += Wave(newPositionXWS);
+                float3 newPositionZWS = positionWS + float3(0, 0, epsilon);
+                newPositionZWS.y += Wave(newPositionZWS);
+                float3 newEdgeX = newPositionXWS - newPositionWS;
+                float3 newEdgeZ = newPositionZWS - newPositionWS;
+                float3 normal = normalize(cross(newEdgeZ, newEdgeX));
                 OUT.positionHCS = TransformWorldToHClip(newPositionWS);
                 OUT.uv = uv;
                 OUT.positionSS = ComputeScreenPos(OUT.positionHCS);
+                OUT.normal = normal;
                 return OUT;
             }
 
@@ -202,7 +226,14 @@ Shader "Custom/Water"
                 float3 voronoi = Voronoi(IN.uv, _Time.y * _SpecularSpeed, _SpecularDensity);
                 float specularHighlight = pow(voronoi.x, _SpecularThickness);
                 float4 specularColour = specularHighlight * _SpecularColour;
-                return AlphaBlend(specularColour, waterColour);
+                float3 existingNormals = SampleSceneNormals(screenUV);
+                float3 viewNormal = normalize(mul((float3x3)UNITY_MATRIX_V, IN.normal));
+                float3 normalDot = saturate(dot(existingNormals, viewNormal));
+                float foamDistance = lerp(_FoamMaxDistance, _FoamMinDistance, normalDot);
+                float foamDepthDifference = saturate(depthDifference / foamDistance);
+                float foamNoiseCutoff = foamDepthDifference * _FoamCutoff;
+                float foamNoise = specularHighlight > foamNoiseCutoff ? 1 : 0;
+                return AlphaBlend(foamNoise, AlphaBlend(specularColour, waterColour));
             }
             ENDHLSL
         }
