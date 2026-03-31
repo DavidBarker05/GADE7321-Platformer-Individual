@@ -1,0 +1,25 @@
+{
+	"dialogueItems": [
+		{
+			"name": "Merzp",
+			"icon": "Dialogue/DialogueIcons/player",
+			"text": "I don't have all the pieces for the distress beacon.",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		},
+		{
+			"name": "Merzp",
+			"icon": "Dialogue/DialogueIcons/player",
+			"text": "If I don't have all the pieces then I won't be saved.",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		},
+		{
+			"name": "Merzp",
+			"icon": "Dialogue/DialogueIcons/player",
+			"text": "I need to get all the pieces...",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		}
+	]
+}

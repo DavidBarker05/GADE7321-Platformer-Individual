@@ -113,6 +113,13 @@
 			"charactersPerSecond": 40
 		},
 		{
+			"name": "Merzp",
+			"icon": "Dialogue/DialogueIcons/player",
+			"text": "And did I just see sorpen food? Might be worth taking a look at, although I dont really need it.",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		},
+		{
 			"name": "Story",
 			"icon": "none",
 			"text": "<i>Merzp carefully scans the water with her suits built in scanner and discovers this water is no water at all as it has a PH level of 1</i>",

@@ -1,0 +1,18 @@
+{
+	"dialogueItems": [
+		{
+			"name": "Merzp",
+			"icon": "Dialogue/DialogueIcons/player",
+			"text": "I don't have enough rocks to reach the ship.",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		},
+		{
+			"name": "Merzp",
+			"icon": "Dialogue/DialogueIcons/player",
+			"text": "Gotta get more...",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		}
+	]
+}

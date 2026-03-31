@@ -1,0 +1,39 @@
+{
+	"dialogueItems": [
+		{
+			"name": "Story",
+			"icon": "none",
+			"text": "<i>Merzp builds up using rocks and gets onto the ship</i>",
+			"fontSize": 24,
+			"charactersPerSecond": 60
+		},
+		{
+			"name": "Merzp",
+			"icon": "Dialogue/DialogueIcons/player",
+			"text": "I'm glad to see you commander",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		},
+		{
+			"name": "Aldrich",
+			"icon": "Dialogue/DialogueIcons/aldrich",
+			"text": "Glad to see you alive Merzp didn't think you would survive on your own.",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		},
+		{
+			"name": "Merzp",
+			"icon": "Dialogue/DialogueIcons/player",
+			"text": "Funny, now get me out of here.",
+			"fontSize": 24,
+			"charactersPerSecond": 40
+		},
+		{
+			"name": "Story",
+			"icon": "none",
+			"text": "<i>The spaceship then flies off</i>",
+			"fontSize": 24,
+			"charactersPerSecond": 60
+		}
+	]
+}
