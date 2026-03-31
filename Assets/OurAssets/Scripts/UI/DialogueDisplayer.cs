@@ -50,7 +50,6 @@ public class DialogueDisplayer : MonoBehaviour
         );
         skipButton.onClick.AddListener(() => isFinishedWithCurrentItem = true);
         skipAllButton.onClick.AddListener(() => StopDisplayingDialogue());
-        Debug.Log(speakerName.rectTransform.anchorMin);
         speakerAnchorMin = speakerName.rectTransform.anchorMin;
         speakerAnchorMax = speakerName.rectTransform.anchorMax;
         speakerPivot = speakerName.rectTransform.pivot;
