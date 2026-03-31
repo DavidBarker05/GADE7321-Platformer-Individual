@@ -48,6 +48,20 @@
 			"text": "<i>Great! Use those to reach us then. Over and out.</i>",
 			"fontSize": 24,
 			"charactersPerSecond": 40
+		},
+		{
+			"name": "Story",
+			"icon": "none",
+			"text": "<i>Merzp notices more zombies</i>",
+			"fontSize": 24,
+			"charactersPerSecond": 60
+		},
+		{
+			"name": "Merzp",
+			"icon": "player",
+			"text": "More of those things, I should avoid them. Especially those bigger glorpnods who seem different from the rest.",
+			"fontSize": 24,
+			"charactersPerSecond": 40
 		}
 	]
 }
