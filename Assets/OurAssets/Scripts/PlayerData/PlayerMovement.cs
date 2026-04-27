@@ -109,8 +109,11 @@ public class PlayerMovement : MonoBehaviour
         {
             if (isGrounded)
             {
-                lastStableGround = transform.parent;
-                stableGroundOffset = transform.position - lastStableGround.position;
+				if (IsFullyOnStableGround) // David - Not partially over the edge
+				{
+					lastStableGround = transform.parent;
+					stableGroundOffset = transform.position - lastStableGround.position;
+				}
                 currentCoyoteTime = coyoteTime;
             }
             else
@@ -226,6 +229,49 @@ public class PlayerMovement : MonoBehaviour
 
     // David - Added ability to be able to disable input (when dialogue starts)
     public void DisableMovement() => canMove = false;
+
+	// David - Check if all extremes of the characterController collider are above the same
+	// stable ground (none of them are over an edge or above a different collider)
+	bool IsFullyOnStableGround
+	{
+		get
+		{
+			if (transform.parent == null) return false;
+			// David - Check if all points are on ground
+			if (!Physics.Raycast(
+				origin: transform.position + transform.up * characterController.radius,
+				direction: -transform.up,
+				hitInfo: out RaycastHit hit0,
+				maxDistance: characterController.radius + groundDistance,
+				layerMask: groundMask)) return false;
+			if (!Physics.Raycast(
+				origin: transform.position + transform.up * characterController.radius + transform.forward * characterController.radius,
+				direction: -transform.up,
+				hitInfo: out RaycastHit hit1,
+				maxDistance: characterController.radius + groundDistance,
+				layerMask: groundMask)) return false;
+			if (!Physics.Raycast(
+				origin: transform.position + transform.up * characterController.radius - transform.forward * characterController.radius,
+				direction: -transform.up,
+				hitInfo: out RaycastHit hit2,
+				maxDistance: characterController.radius + groundDistance,
+				layerMask: groundMask)) return false;
+			if (!Physics.Raycast(
+				origin: transform.position + transform.up * characterController.radius + transform.right * characterController.radius,
+				direction: -transform.up,
+				hitInfo: out RaycastHit hit3,
+				maxDistance: characterController.radius + groundDistance,
+				layerMask: groundMask)) return false;
+			if (!Physics.Raycast(
+				origin: transform.position + transform.up * characterController.radius - transform.right * characterController.radius,
+				direction: -transform.up,
+				hitInfo: out RaycastHit hit4,
+				maxDistance: characterController.radius + groundDistance,
+				layerMask: groundMask)) return false;
+			// Check if all points are on the same ground
+			return hit0.collider == hit1.collider && hit1.collider == hit2.collider && hit2.collider == hit3.collider && hit3.collider == hit4.collider;
+		}
+	}
 
     // David - Reset the player to the last stable ground
     public void ResetToLastStableGround()
