@@ -17,15 +17,29 @@ public class MovingPlatform : MonoBehaviour
 	{
 		m_MotionCurve ??= new AnimationCurve();
 		if (m_MotionCurve.length == 0 || m_MotionCurve.length > 2) CreateLinearMotion();
-		if (m_MotionCurve[0].value != 0f) m_MotionCurve.keys[0].value = 0f;
-		if (m_MotionCurve[1].value != 1f) m_MotionCurve.keys[1].value = 1f;
+		if (m_MotionCurve[0].value != 0f || m_MotionCurve[1].value != 1f) ClampCurveValues();
 	}
 
 	void CreateLinearMotion()
 	{
 		m_MotionCurve.keys = new Keyframe[] { new Keyframe(0f, 0f), new Keyframe(1f, 1f) };
-		AnimationUtility.SetKeyLeftTangentMode(m_MotionCurve, 0, AnimationUtility.TangentMode.Auto);
-		AnimationUtility.SetKeyLeftTangentMode(m_MotionCurve, 1, AnimationUtility.TangentMode.Auto);
+		AnimationUtility.SetKeyLeftTangentMode(m_MotionCurve, 0, AnimationUtility.TangentMode.Linear);
+		AnimationUtility.SetKeyRightTangentMode(m_MotionCurve, 0, AnimationUtility.TangentMode.Linear);
+		AnimationUtility.SetKeyLeftTangentMode(m_MotionCurve, 1, AnimationUtility.TangentMode.Linear);
+		AnimationUtility.SetKeyRightTangentMode(m_MotionCurve, 1, AnimationUtility.TangentMode.Linear);
+	}
+
+	void ClampCurveValues()
+	{
+		AnimationUtility.TangentMode k0L = AnimationUtility.GetKeyLeftTangentMode(m_MotionCurve, 0);
+		AnimationUtility.TangentMode k0R = AnimationUtility.GetKeyRightTangentMode(m_MotionCurve, 0);
+		AnimationUtility.TangentMode k1L = AnimationUtility.GetKeyLeftTangentMode(m_MotionCurve, 1);
+		AnimationUtility.TangentMode k1R = AnimationUtility.GetKeyRightTangentMode(m_MotionCurve, 1);
+		m_MotionCurve.keys = new Keyframe[] { new Keyframe(m_MotionCurve[0].time, 0f), new Keyframe(m_MotionCurve[1].time, 1f) };
+		AnimationUtility.SetKeyLeftTangentMode(m_MotionCurve, 0, k0L);
+		AnimationUtility.SetKeyRightTangentMode(m_MotionCurve, 0, k0R);
+		AnimationUtility.SetKeyLeftTangentMode(m_MotionCurve, 1, k1L);
+		AnimationUtility.SetKeyRightTangentMode(m_MotionCurve, 1, k1R);
 	}
 
 	void OnValidate() => EnsureValidCurve();

@@ -1689,7 +1689,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MovingPlatform
   m_PointA: {fileID: 892801794}
   m_PointB: {fileID: 698509946}
-  m_WaitTime: 0
   m_MotionCurve:
     serializedVersion: 2
     m_Curve:
@@ -1698,7 +1697,7 @@ MonoBehaviour:
       value: 0
       inSlope: 0.25
       outSlope: 0.25
-      tangentMode: 34
+      tangentMode: 35
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
@@ -1707,7 +1706,7 @@ MonoBehaviour:
       value: 1
       inSlope: 0.25
       outSlope: 0.25
-      tangentMode: 34
+      tangentMode: 35
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0
