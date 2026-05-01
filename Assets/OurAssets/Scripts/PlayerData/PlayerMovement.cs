@@ -103,7 +103,7 @@ public class PlayerMovement : MonoBehaviour
             hitInfo: out RaycastHit hit,
             maxDistance: groundDistance,
             layerMask: groundMask,
-            queryTriggerInteraction: QueryTriggerInteraction.Ignore);
+            queryTriggerInteraction: QueryTriggerInteraction.Ignore) || transform.parent != startingParent; // On ground or floating/moving platform
 
         // David - Set last stable ground if we're grounded and can move so can teleport back
         // if needed
