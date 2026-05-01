@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField]
-    Animator animator; // David added
+    PlayerAnimator playerAnimator; // David added. David - Using this instead of animator so other classes can change values if needed maybe like the direction the player falls when they die
     public float walkSpeed = 6f;
     public float runSpeed = 12f;
     public float jumpHeight = 1f; // David - Changed to set jump height instead of velocity
@@ -172,9 +172,9 @@ public class PlayerMovement : MonoBehaviour
 	{
         Vector3 hVel = moveDirection;
         hVel.y = 0f;
-        animator.SetFloat("Speed", hVel.magnitude);
-        animator.SetBool("IsCrouching", isCrouching);
-        animator.SetBool("IsGrounded", isGrounded);
+        playerAnimator.Speed = hVel.magnitude;
+        playerAnimator.IsCrouching = isCrouching;
+        playerAnimator.IsGrounded = isGrounded;
 	}
 
 	#region Input Handling
