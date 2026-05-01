@@ -14,8 +14,8 @@ public class DialogueHelperEditor : Editor
 		if (helper.FileName.Length > 0) if (GUILayout.Button($"Load \"{helper.FileAndSub}.json\"")) helper.LoadFile();
 		if (!string.IsNullOrWhiteSpace(helper.FileNameToSaveOrDelete))
 		{
-			if (GUILayout.Button($"Create/Modify \"{helper.FileNameToSaveOrDelete}.json\"")) helper.SaveFile();
-			if (GUILayout.Button($"Delete \"{helper.FileNameToSaveOrDelete}.json\"")) helper.DeleteFile();
+			if (GUILayout.Button($"Create/Modify \"{helper.FileToSaveOrDeleteAndSub}.json\"")) helper.SaveFile();
+			if (GUILayout.Button($"Delete \"{helper.FileToSaveOrDeleteAndSub}.json\"")) helper.DeleteFile();
 		}
 		EditorUtility.SetDirty(target);
 	}
