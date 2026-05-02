@@ -60,9 +60,6 @@ public class DialogueEditor : EditorWindow
 			m_LastSelectedDirectoryOptionIndex = m_SelectedDirectoryOptionIndex;
 			m_SelectedDirectoryIndex = 0;
 			m_LastSelectedDirectoryIndex = 0;
-			m_FileName = "";
-			m_SelectedFileOptionIndex = 0;
-			m_LastSelectedFileOptionIndex = 0;
 			m_SelectedFileIndex = 0;
 			m_LastSelectedFileIndex = 0;
 			m_SubDirectories = null;
@@ -105,12 +102,23 @@ public class DialogueEditor : EditorWindow
 				}
 				if (Dialogue == null && !string.IsNullOrWhiteSpace(m_FileName)) LoadFile();
 			}
-			else m_FileName = EditorGUILayout.TextField("New File Name", m_FileName);
+			else
+			{
+				m_FileName = EditorGUILayout.TextField("New File Name", m_FileName);
+				m_SelectedFileIndex = 0;
+				m_LastSelectedFileIndex = 0;
+			}
 		}
 		else
 		{
 			m_DirectoryName = EditorGUILayout.TextField("New Directory Name", m_DirectoryName);
 			m_FileName = EditorGUILayout.TextField("New File Name", m_FileName);
+			m_SelectedDirectoryIndex = 0;
+			m_LastSelectedDirectoryIndex = 0;
+			m_SelectedFileOptionIndex = 1;
+			m_LastSelectedFileOptionIndex = 1;
+			m_SelectedFileIndex = 0;
+			m_LastSelectedFileIndex = 0;
 		}
 		m_DirectoryName.Trim();
 		m_FileName.Trim();
