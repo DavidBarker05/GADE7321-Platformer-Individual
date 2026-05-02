@@ -1,32 +1,17 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
-// TODO: probably can simplify this a bit to choose to modify file first then only need to show those specific files
-// then for creation they can choose existing directory or new directory
 public class DialogueEditor : EditorWindow
 {
 	static readonly string s_ResourcesFolder = $"{Application.dataPath.TrimEnd('/')}/Resources";
 
 	bool m_bClearOnDelete = true;
 
-	string m_DirectoryName = "";
-	string FullDirectoryPath => $"{Application.dataPath.TrimEnd('/')}/{m_DirectoryName}";
-	readonly string[] m_DirectoryOptions = new string[2]
-	{
-		"Use Existing Subdirectory",
-		"Create New Subdirectory"
-	};
-	int m_SelectedDirectoryOptionIndex = 0;
-	int m_LastSelectedDirectoryOptionIndex = 0;
-	string[] m_SubDirectories;
-	int m_SelectedDirectoryIndex = 0;
-	int m_LastSelectedDirectoryIndex = 0;
-
 	string m_FileName = "";
-	string FilePath => $"{m_DirectoryName.TrimEnd('/')}/{m_FileName}";
-	string FullFilePath => $"{FullDirectoryPath.TrimEnd('/')}/{m_FileName}";
 	readonly string[] m_FileOptions = new string[2]
 	{
 		"Use Existing JSON",
@@ -38,14 +23,27 @@ public class DialogueEditor : EditorWindow
 	int m_SelectedFileIndex = 0;
 	int m_LastSelectedFileIndex = 0;
 
+	string m_DirectoryName = "";
+	readonly string[] m_DirectoryOptions = new string[2]
+	{
+		"Use Existing Subdirectory",
+		"Create New Subdirectory"
+	};
+	int m_SelectedDirectoryOptionIndex = 0;
+	int m_LastSelectedDirectoryOptionIndex = 0;
+	string[] m_Directories;
+	int m_SelectedDirectoryIndex = 0;
+
 	public Dialogue Dialogue;
 	SerializedObject m_SerializedObject;
 	SerializedProperty m_SerializedProperty;
 
+	Vector2 m_ScrollPos;
+
 	[MenuItem("Window/Edit Dialogue")]
 	public static void ShowWindow() => GetWindow<DialogueEditor>("Dialogue Editor");
 
-	void OnEnable()
+	public void CreateGUI()
 	{
 		m_SerializedObject = new SerializedObject(this);
 		m_SerializedProperty = m_SerializedObject.FindProperty("Dialogue");
@@ -55,107 +53,104 @@ public class DialogueEditor : EditorWindow
 	{
 		m_bClearOnDelete = EditorGUILayout.Toggle("Clear on Delete", m_bClearOnDelete);
 
-		m_SelectedDirectoryOptionIndex = EditorGUILayout.Popup("Choose Directory to Use", m_SelectedDirectoryOptionIndex, m_DirectoryOptions);
-		if (m_LastSelectedDirectoryOptionIndex != m_SelectedDirectoryOptionIndex)
+		m_SelectedFileOptionIndex = EditorGUILayout.Popup("Choose File to Use", m_SelectedFileOptionIndex, m_FileOptions);
+		if (m_SelectedFileOptionIndex == 0)
 		{
-			m_DirectoryName = "";
-			m_LastSelectedDirectoryOptionIndex = m_SelectedDirectoryOptionIndex;
-			m_SelectedDirectoryIndex = 0;
-			m_LastSelectedDirectoryIndex = 0;
-			m_SelectedFileIndex = 0;
-			m_LastSelectedFileIndex = 0;
-			m_SubDirectories = null;
-			m_Files = null;
-			Dialogue = null;
-		}
-		if (m_SubDirectories == null && m_SelectedDirectoryOptionIndex == 0) GetDirectories();
-		if (m_SelectedDirectoryOptionIndex == 0)
-		{
-			m_SelectedDirectoryIndex = EditorGUILayout.Popup("Select an Existing Directory", m_SelectedDirectoryIndex, m_SubDirectories);
-			m_DirectoryName = m_SubDirectories.Length > 0 ? m_SubDirectories[m_SelectedDirectoryIndex] : "";
-			if (m_LastSelectedDirectoryIndex != m_SelectedDirectoryIndex)
+			if (GUILayout.Button("Refresh") || m_Files == null ||  m_LastSelectedFileOptionIndex != m_SelectedFileOptionIndex)
 			{
-				m_LastSelectedDirectoryIndex = m_SelectedDirectoryIndex;
-				m_SelectedFileIndex = 0;
-				m_LastSelectedFileIndex = 0;
-				GetDirectories();
-				if (m_SelectedFileOptionIndex == 0) GetFiles();
-				Dialogue = null;
-			}
-			m_SelectedFileOptionIndex = EditorGUILayout.Popup("Choose File to Use", m_SelectedFileOptionIndex, m_FileOptions);
-			if (m_LastSelectedFileOptionIndex != m_SelectedFileOptionIndex)
-			{
-				m_FileName = "";
 				m_LastSelectedFileOptionIndex = m_SelectedFileOptionIndex;
+				GetFiles();
 				m_SelectedFileIndex = 0;
-				m_Files = null;
-				Dialogue = null;
+				m_LastSelectedFileIndex = -1;
+				m_DirectoryName = "";
 			}
-			if (m_Files == null && m_SelectedFileOptionIndex == 0) GetFiles();
-			if (m_SelectedFileOptionIndex == 0)
+			m_SelectedFileIndex = EditorGUILayout.Popup("Select an Existing File", m_SelectedFileIndex, m_Files);
+			m_FileName = m_Files.Length > 0 ? m_Files[m_SelectedFileIndex] : "";
+			if (!string.IsNullOrWhiteSpace(m_FileName) && m_LastSelectedFileIndex != m_SelectedFileIndex)
 			{
-				m_SelectedFileIndex = EditorGUILayout.Popup("Select an Existing File", m_SelectedFileIndex, m_Files);
-				m_FileName = m_Files.Length > 0 ? m_Files[m_SelectedFileIndex] : "";
-				if (m_LastSelectedFileIndex != m_SelectedFileIndex)
-				{
-					GetFiles();
-					m_LastSelectedFileIndex = m_SelectedFileIndex;
-					if (!string.IsNullOrWhiteSpace(m_FileName)) LoadFile();
-				}
-				if (Dialogue == null && !string.IsNullOrWhiteSpace(m_FileName)) LoadFile();
-			}
-			else
-			{
-				m_FileName = EditorGUILayout.TextField("New File Name", m_FileName);
-				m_SelectedFileIndex = 0;
-				m_LastSelectedFileIndex = 0;
+				m_LastSelectedFileIndex = m_SelectedFileIndex;
+				LoadFile();
 			}
 		}
 		else
 		{
-			m_DirectoryName = EditorGUILayout.TextField("New Directory Name", m_DirectoryName);
-			m_FileName = EditorGUILayout.TextField("New File Name", m_FileName);
-			m_SelectedDirectoryIndex = 0;
-			m_LastSelectedDirectoryIndex = 0;
-			m_SelectedFileOptionIndex = 1;
-			m_LastSelectedFileOptionIndex = 1;
-			m_SelectedFileIndex = 0;
-			m_LastSelectedFileIndex = 0;
+			if (m_LastSelectedFileOptionIndex != m_SelectedFileOptionIndex)
+			{
+				m_LastSelectedFileOptionIndex = m_SelectedFileOptionIndex;
+				m_DirectoryName = "";
+				m_SelectedDirectoryOptionIndex = 0;
+				m_LastSelectedDirectoryOptionIndex = -1;
+				Dialogue = null;
+			}
+			m_SelectedDirectoryOptionIndex = EditorGUILayout.Popup("Choose Directory to Use", m_SelectedDirectoryOptionIndex, m_DirectoryOptions);
+			if (m_LastSelectedDirectoryOptionIndex == 0)
+			{
+				if (GUILayout.Button("Refresh") || m_Directories == null || m_LastSelectedDirectoryOptionIndex != m_SelectedDirectoryOptionIndex)
+				{
+					GetDirectories();
+					m_LastSelectedDirectoryOptionIndex = m_SelectedDirectoryOptionIndex;
+					m_SelectedDirectoryIndex = 0;
+				}
+				m_SelectedDirectoryIndex = EditorGUILayout.Popup("Select an Existing Directory", m_SelectedDirectoryIndex, m_Directories);
+				m_DirectoryName = m_Directories.Length > 0 ? m_Directories[m_SelectedDirectoryIndex] : "";
+			}
+			else
+			{
+				if (m_LastSelectedDirectoryOptionIndex != m_SelectedDirectoryOptionIndex)
+				{
+					m_FileName = "";
+					m_LastSelectedDirectoryOptionIndex = m_SelectedDirectoryOptionIndex;
+				}
+				m_DirectoryName = EditorGUILayout.TextField("New Directory Name", m_DirectoryName).Trim();
+			}
+			m_FileName = EditorGUILayout.TextField("New File Name", m_FileName).Trim();
 		}
-		m_DirectoryName.Trim();
-		m_FileName.Trim();
 
 		Dialogue ??= new Dialogue();
+
+		m_ScrollPos = EditorGUILayout.BeginScrollView(m_ScrollPos);
 
 		m_SerializedObject.Update();
 		EditorGUILayout.PropertyField(m_SerializedProperty, true);
 		m_SerializedObject.ApplyModifiedProperties();
 
+		EditorGUILayout.EndScrollView();
+
 		if (GUILayout.Button("Clear Input")) Clear();
 
 		if (string.IsNullOrEmpty(m_FileName)) return;
+
 		if (m_SelectedFileOptionIndex == 0)
 		{
-			if (GUILayout.Button($"Modify \"{FilePath}{(FilePath.EndsWith(".json") ? "" : ".json")}\""))
-			{
-				if (!m_FileName.EndsWith(".json")) m_FileName += ".json";
-				SaveFile();
-			}
-			if (GUILayout.Button($"Delete \"{FilePath}{(FilePath.EndsWith(".json") ? "" : ".json")}\""))
-			{
-				if (!m_FileName.EndsWith(".json")) m_FileName += ".json";
-				DeleteFile();
-			}
+			if (GUILayout.Button($"Modify \"{m_FileName}\"")) ModifyFile();
+			if (GUILayout.Button($"Delete \"{m_FileName}\"")) DeleteFile();
 		}
-		else if (!string.IsNullOrWhiteSpace(m_DirectoryName))
+		else
 		{
-			if (GUILayout.Button($"Create \"{(FilePath.StartsWith("Resources/") ? "" : "Resources/")}{FilePath}{(FilePath.EndsWith(".json") ? "" : ".json")}\""))
-			{
-				if (!FilePath.StartsWith("Resources/")) m_DirectoryName = "Resources/" + m_DirectoryName;
-				if (!FilePath.EndsWith(".json")) m_FileName += ".json";
-				SaveFile();
-			}
+			string path = GetFullPath(m_DirectoryName, m_FileName);
+			string partialPath = path.TrimStart($"{s_ResourcesFolder}/");
+			if (GUILayout.Button($"Create \"{partialPath}\"")) CreateFile(path, partialPath);
 		}
+	}
+
+	void GetFiles()
+	{
+		List<string> _filesList = new List<string>();
+		string[] _files = Directory.GetFiles(s_ResourcesFolder, "*.json", SearchOption.AllDirectories);
+		for (int i = 0; i < _files.Length; ++i)
+		{
+			_files[i] = _files[i].Replace('\\', '/');
+			_files[i] = _files[i][s_ResourcesFolder.Length..].TrimStart('/').TrimEnd(".json");
+			TextAsset json = Resources.Load<TextAsset>(_files[i]);
+			try
+			{
+				Dialogue _dialogue = JsonUtility.FromJson<SerialisedDialogue>(json.text).Deserialised;
+				_files[i] += ".json";
+				_filesList.Add(_files[i]);
+			}
+			catch { }
+		}
+		m_Files = _filesList.ToArray();
 	}
 
 	void GetDirectories()
@@ -166,27 +161,14 @@ public class DialogueEditor : EditorWindow
 			_subDirectories[i] = _subDirectories[i].Replace('\\', '/');
 			_subDirectories[i] = _subDirectories[i].Substring(Application.dataPath.Length).TrimStart('/');
 		}
-		m_SubDirectories = new string[_subDirectories.Length + 1];
-		m_SubDirectories[0] = "Resources";
-		_subDirectories.CopyTo(m_SubDirectories, 1);
-	}
-
-	void GetFiles()
-	{
-		m_Files = Directory.GetFiles(FullDirectoryPath, "*.json");
-		for (int i = 0; i < m_Files.Length; ++i)
-		{
-			m_Files[i] = m_Files[i].Replace('\\', '/');
-			int slashIndex = m_Files[i].LastIndexOf('/');
-			m_Files[i] = m_Files[i].Substring(slashIndex, m_Files[i].Length - slashIndex).Trim('/');
-		}
+		m_Directories = new string[_subDirectories.Length + 1];
+		m_Directories[0] = "Resources";
+		_subDirectories.CopyTo(m_Directories, 1);
 	}
 
 	void LoadFile()
 	{
-		string jsonPath = FilePath;
-		if (jsonPath.StartsWith("Resources/")) jsonPath = jsonPath.Substring("Resources/".Length).TrimStart('/');
-		if (jsonPath.EndsWith(".json")) jsonPath = jsonPath.Substring(0, jsonPath.Length - ".json".Length);
+		string jsonPath = m_FileName.TrimEnd(".json");
 		TextAsset json = Resources.Load<TextAsset>(jsonPath);
 		if (!json)
 		{
@@ -196,53 +178,74 @@ public class DialogueEditor : EditorWindow
 		try
 		{
 			Dialogue = JsonUtility.FromJson<SerialisedDialogue>(json.text).Deserialised;
-			Debug.Log($"Successfully loaded \"Assets/Resources/{jsonPath}.json\"");
+			Debug.Log($"Successfully loaded \"{jsonPath}.json\"");
 		}
 		catch (ArgumentException)
 		{
-			Debug.LogError($"Invalid data in \"Assets/Resources/{jsonPath}.json\"");
+			Debug.LogError($"Invalid data in \"{jsonPath}.json\"");
 		}
 	}
 
-	void SaveFile()
+	string GetFullPath(string directory, string file)
 	{
-		if (!Directory.Exists(FullDirectoryPath)) Directory.CreateDirectory(FullDirectoryPath);
+		if (string.IsNullOrWhiteSpace(file)) return null;
+		string path = file;
+		if (!string.IsNullOrWhiteSpace(directory)) path = Path.Combine(directory, path).Replace('\\', '/');
+		if (!path.StartsWith("Resources/", StringComparison.OrdinalIgnoreCase)) path = $"Resources/{path}";
+		if (!path.StartsWith($"{Application.dataPath.TrimEnd('/')}/", StringComparison.OrdinalIgnoreCase)) path = $"{Application.dataPath.TrimEnd('/')}/{path}";
+		if (!path.EndsWith(".json", StringComparison.OrdinalIgnoreCase)) path += ".json";
+		return path;
+	}
+
+	void SaveFile(string file)
+	{
 		string json = JsonUtility.ToJson(Dialogue.Serialised, prettyPrint: true);
-		string message = $"Successfully {(File.Exists(FullFilePath) ? "modified" : "created")} \"{FilePath}\"";
-		File.WriteAllText(FullFilePath, json);
-		Debug.Log(message);
+		File.WriteAllText(file, json);
+	}
+
+	void ModifyFile()
+	{
+		string path = GetFullPath(m_DirectoryName, m_FileName);
+		SaveFile(path);
+		Debug.Log($"Successfully modified \"{path.TrimStart($"{s_ResourcesFolder}/")}\"");
+	}
+
+	void CreateFile(string path, string partialPath)
+	{
+		if (!File.Exists(path))
+		{
+			SaveFile(path);
+			Debug.Log($"Successfully created \"{partialPath}\"");
+		}
+		else Debug.LogError($"\"{partialPath}\" already exists!");
 	}
 
 	void DeleteFile()
 	{
-		string message = $"Successfully deleted \"{FilePath}\"";
-		File.Delete(FullFilePath);
-		if (File.Exists($"{FullFilePath}.meta"))
+		string fullPath = GetFullPath(m_DirectoryName, m_FileName);
+		string message = $"Successfully deleted \"{m_FileName}\"";
+		File.Delete(fullPath);
+		if (File.Exists($"{fullPath}.json"))
 		{
-			File.Delete($"{FullFilePath}.meta");
-			message += $" and \"{FilePath}.meta\"";
+			File.Delete($"{fullPath}.json");
+			message += $" and \"{m_FileName}.meta\"";
 		}
 		if (m_bClearOnDelete) Clear();
-		Debug.Log(message);
 	}
 
 	void Clear()
 	{
-		m_LastSelectedDirectoryOptionIndex = 0;
-		m_LastSelectedDirectoryOptionIndex = 0;
-		m_SelectedDirectoryIndex = 0;
-		m_LastSelectedDirectoryIndex = 0;
-		m_LastSelectedFileOptionIndex = 0;
-		m_LastSelectedFileOptionIndex = 0;
+		m_FileName = "";
+		m_SelectedFileOptionIndex = 0;
+		m_LastSelectedFileOptionIndex = -1;
 		m_SelectedFileIndex = 0;
-		m_LastSelectedFileIndex = 0;
-		GetDirectories();
-		m_DirectoryName = m_SubDirectories[0];
-		GetFiles();
-		m_FileName = m_Files.Length > 0 ? m_Files[0] : "";
-		if (!string.IsNullOrWhiteSpace(m_FileName)) LoadFile();
-		else Dialogue = new Dialogue();
-		m_SerializedObject.Update();
-		m_SerializedObject.ApplyModifiedProperties();
+		m_LastSelectedFileIndex = -1;
+		m_Files = null;
+		m_SelectedDirectoryOptionIndex = 0;
+		m_LastSelectedDirectoryOptionIndex = -1;
+		m_SelectedDirectoryIndex = 0;
+		m_DirectoryName = "";
+		m_Directories = null;
+		Dialogue = null;
 	}
 }
