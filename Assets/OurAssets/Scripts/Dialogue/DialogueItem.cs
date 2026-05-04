@@ -39,7 +39,7 @@ public class DialogueItem
             }
             else ico = "none";
 
-			return new SerialisedDialogueItem() { name = Name, icon = ico, text = Text, fontSize = FontSize, };
+			return new SerialisedDialogueItem() { name = Name, icon = ico, text = Text, fontSize = FontSize, charactersPerSecond = CharactersPerSecond };
 #else
 			return new SerialisedDialogueItem();
 #endif
