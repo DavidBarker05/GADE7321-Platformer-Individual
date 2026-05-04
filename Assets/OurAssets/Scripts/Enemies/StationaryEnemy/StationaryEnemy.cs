@@ -1,7 +1,6 @@
 using UnityEngine;
 
-[RequireComponent(typeof(EnemyCollision))]
-public class StationaryEnemy : MonoBehaviour
+public class StationaryEnemy : BaseEnemy
 {
     [SerializeField, Range(1f / 10f, 1f / 0.1f)] // Min 1 projectile every 10 seconds, Max 1 projectile every 0.1 seconds
     float m_FireRate = 0.5f;
