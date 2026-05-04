@@ -1,4 +1,3 @@
-using UnityEditor;
 using UnityEngine;
 
 public class MovingPlatform : MonoBehaviour
@@ -23,23 +22,35 @@ public class MovingPlatform : MonoBehaviour
 	void CreateLinearMotion()
 	{
 		m_MotionCurve.keys = new Keyframe[] { new Keyframe(0f, 0f), new Keyframe(1f, 1f) };
-		AnimationUtility.SetKeyLeftTangentMode(m_MotionCurve, 0, AnimationUtility.TangentMode.Linear);
-		AnimationUtility.SetKeyRightTangentMode(m_MotionCurve, 0, AnimationUtility.TangentMode.Linear);
-		AnimationUtility.SetKeyLeftTangentMode(m_MotionCurve, 1, AnimationUtility.TangentMode.Linear);
-		AnimationUtility.SetKeyRightTangentMode(m_MotionCurve, 1, AnimationUtility.TangentMode.Linear);
+		SetKeyTangentLinear(m_MotionCurve, 0);
+		SetKeyTangentLinear(m_MotionCurve, 1);
 	}
 
 	void ClampCurveValues()
 	{
-		AnimationUtility.TangentMode k0L = AnimationUtility.GetKeyLeftTangentMode(m_MotionCurve, 0);
-		AnimationUtility.TangentMode k0R = AnimationUtility.GetKeyRightTangentMode(m_MotionCurve, 0);
-		AnimationUtility.TangentMode k1L = AnimationUtility.GetKeyLeftTangentMode(m_MotionCurve, 1);
-		AnimationUtility.TangentMode k1R = AnimationUtility.GetKeyRightTangentMode(m_MotionCurve, 1);
+		(float, float) k0 = GetKeyTangent(m_MotionCurve, 0);
+		(float, float) k1 = GetKeyTangent(m_MotionCurve, 1);
 		m_MotionCurve.keys = new Keyframe[] { new Keyframe(m_MotionCurve[0].time, 0f), new Keyframe(m_MotionCurve[1].time, 1f) };
-		AnimationUtility.SetKeyLeftTangentMode(m_MotionCurve, 0, k0L);
-		AnimationUtility.SetKeyRightTangentMode(m_MotionCurve, 0, k0R);
-		AnimationUtility.SetKeyLeftTangentMode(m_MotionCurve, 1, k1L);
-		AnimationUtility.SetKeyRightTangentMode(m_MotionCurve, 1, k1R);
+		SetKeyTangent(m_MotionCurve, 0, k0);
+		SetKeyTangent(m_MotionCurve, 1, k1);
+	}
+
+	void SetKeyTangentLinear(AnimationCurve animationCurve, int index)
+	{
+		Keyframe[] keys = animationCurve.keys;
+		float inTangent = index > 0 ? ((keys[index].value - keys[index - 1].value) / (keys[index].time - keys[index - 1].time)) : 0f;
+		float outTangent = index < keys.Length - 1 ? ((keys[index + 1].value - keys[index].value) / (keys[index + 1].time - keys[index].time)) : 0f;
+		keys[index].inTangent = inTangent;
+		keys[index].outTangent = outTangent;
+		animationCurve.keys = keys;
+	}
+
+	(float, float) GetKeyTangent(AnimationCurve animationCurve, int index) => (animationCurve[index].inTangent, animationCurve[index].outTangent);
+
+	void SetKeyTangent(AnimationCurve animationCurve, int index, (float inTangent, float outTangent) tangent)
+	{
+		animationCurve.keys[index].inTangent = tangent.inTangent;
+		animationCurve.keys[index].outTangent = tangent.outTangent;
 	}
 
 	void OnValidate() => EnsureValidCurve();
