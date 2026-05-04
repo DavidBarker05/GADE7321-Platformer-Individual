@@ -14,17 +14,19 @@ public class CheckpointManager : MonoBehaviour
             {
                 GameObject go = new GameObject("CheckpointManager");
                 _instance = go.AddComponent<CheckpointManager>();
-				TempCheckpointDataFile = Path.Combine(Application.temporaryCachePath, "CheckpointData.txt"); // The place to store data between levels
+				_instance.tempCheckpointDataFile = Path.Combine(Application.temporaryCachePath, "CheckpointData.txt"); // The place to store data between levels
 			}
             return _instance;
         }
     }
-    static string TempCheckpointDataFile;
 
     [SerializeField]
     DeathScreen deathScreen;
+    [SerializeField, Min(0)]
+    int scoreLostOnDeath = 20; // Normal pickups needed to beat level give score, but dying now loses score
 
-    readonly StackADT<Checkpoint> checkpointStack = new StackADT<Checkpoint>();
+	readonly StackADT<Checkpoint> checkpointStack = new StackADT<Checkpoint>();
+    string tempCheckpointDataFile;
 
     PlayerRespawner _player;
     PlayerRespawner Player
@@ -48,7 +50,7 @@ public class CheckpointManager : MonoBehaviour
         else
         {
             _instance = this;
-			TempCheckpointDataFile = Path.Combine(Application.temporaryCachePath, "CheckpointData.txt"); // The place to store data between levels
+			tempCheckpointDataFile = Path.Combine(Application.temporaryCachePath, "CheckpointData.txt"); // The place to store data between levels
 		}
     }
 
@@ -57,13 +59,13 @@ public class CheckpointManager : MonoBehaviour
 	void OnApplicationQuit() // Hopefully this gets called when editor stops playing too
 	{
         isQuit = true;
-        if (File.Exists(TempCheckpointDataFile)) File.Delete(TempCheckpointDataFile); // Destroy temp data on close
+        if (File.Exists(tempCheckpointDataFile)) File.Delete(tempCheckpointDataFile); // Destroy temp data on close
 	}
 
 	void OnDestroy()
 	{
         // Write data to file on destroy (scene change), but not if application closing
-        if (!isQuit) File.WriteAllText(TempCheckpointDataFile, $"{checkpointStack.Peek().Lives}\n{checkpointStack.Peek().Score}");
+        if (!isQuit) File.WriteAllText(tempCheckpointDataFile, $"{checkpointStack.Peek().Lives}\n{checkpointStack.Peek().Score}");
 	}
 
 	public void SetStartingCheckpoint(Checkpoint checkpoint)
@@ -75,9 +77,9 @@ public class CheckpointManager : MonoBehaviour
             checkpoint.Lives = checkpoint.StartingLives;
             if (LevelStartManager.Instance.StartingLevelIndex != SceneManager.GetActiveScene().buildIndex) // Not in the starting scene so we should read the previous lives and score
             {
-                if (File.Exists(TempCheckpointDataFile))
+                if (File.Exists(tempCheckpointDataFile))
                 {
-                    string contents = File.ReadAllText(TempCheckpointDataFile);
+                    string contents = File.ReadAllText(tempCheckpointDataFile);
                     string[] lines = contents.Split('\n'); // Split by line
                     if (lines.Length == 2)
                     {
@@ -112,6 +114,7 @@ public class CheckpointManager : MonoBehaviour
     public void LoseLife()
     {
         if (checkpointStack.IsEmpty) return; // If no checkpoints then do nothing
+        checkpointStack.Peek().Score = Mathf.Max(checkpointStack.Peek().Score - scoreLostOnDeath, 0); // Don't go below 0 score
         if (--checkpointStack.Peek().Lives > 0) // Decrement the lives and if more than 0 respawn
         {
             Transform respawnPoint = checkpointStack.Peek().RespawnPoint;
