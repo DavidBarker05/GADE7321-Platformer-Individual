@@ -81,7 +81,6 @@ public class CheckpointManager : MonoBehaviour
                     }
                 }
             }
-            else if (File.Exists(TempCheckpointDataFile)) File.Delete(TempCheckpointDataFile); // Is the starting level, but data was left behind from a previous game (likely the game crashed) so delete the previous game's data
             Transform startingPoint = checkpoint.RespawnPoint;
             Player.Respawn(startingPoint); // Spawn player at start
         }
