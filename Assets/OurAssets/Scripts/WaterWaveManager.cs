@@ -12,6 +12,7 @@ public class WaterWaveManager : MonoBehaviour
             {
                 GameObject go = new GameObject("WaterWaveManager");
                 _instance = go.AddComponent<WaterWaveManager>();
+                _instance.playerPause = FindFirstObjectByType<PlayerPause>();
             }
             return _instance;
         }
@@ -28,10 +29,16 @@ public class WaterWaveManager : MonoBehaviour
 
     public float WaterTime { get; private set; } = 0f;
 
+    PlayerPause playerPause;
+
     void Awake()
     {
         if (_instance && _instance != this) Destroy(gameObject);
-        else _instance = this;
+        else
+        {
+            _instance = this;
+			playerPause = FindFirstObjectByType<PlayerPause>();
+		}
     }
 
     void OnDisable()
@@ -52,7 +59,8 @@ public class WaterWaveManager : MonoBehaviour
 
     void Update()
     {
-        WaterTime += Time.unscaledDeltaTime;
+        if (playerPause && playerPause.Paused) return; // Don't do waves in pause menu it looks weird
+        WaterTime += Time.unscaledDeltaTime; // Do waves in dialogue and death because it looks fine
         foreach (Material m in waterMaterials)
         {
             m.SetFloat("_WaveAmplitude", WaveAmplitude);

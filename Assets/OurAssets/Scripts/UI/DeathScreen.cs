@@ -16,5 +16,10 @@ public class DeathScreen : MonoBehaviour
         });
     }
 
-    void OnEnable() => FindFirstObjectByType<PlayerInputScript>().DisableCharacterInput();
+    void OnEnable()
+    {
+        PlayerInputScript pis = FindFirstObjectByType<PlayerInputScript>();
+        pis.DisableCharacterInput();
+        pis.GetComponentInChildren<Renderer>().enabled = false; // Hide character model on death
+    }
 }
