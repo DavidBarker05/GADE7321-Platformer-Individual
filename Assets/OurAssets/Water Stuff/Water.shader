@@ -223,7 +223,7 @@ Shader "Custom/Water"
                 float depthDifference = existingDepthLinear - IN.positionSS.w;
                 float waterDepthDifference = saturate(depthDifference / _WaterDepth);
                 float4 waterColour = lerp(_ShallowColour, _DeepColour, waterDepthDifference);
-                float3 voronoi = Voronoi(IN.uv, _Time.y * _SpecularSpeed, _SpecularDensity);
+                float3 voronoi = Voronoi(IN.uv, _GlobalWaterTime * _SpecularSpeed, _SpecularDensity);
                 float specularHighlight = pow(voronoi.x, _SpecularThickness);
                 float4 specularColour = specularHighlight * _SpecularColour;
                 float3 existingNormals = SampleSceneNormals(screenUV);

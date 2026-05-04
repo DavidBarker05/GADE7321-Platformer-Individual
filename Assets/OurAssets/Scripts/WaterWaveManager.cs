@@ -52,7 +52,7 @@ public class WaterWaveManager : MonoBehaviour
 
     void Update()
     {
-        WaterTime += Time.deltaTime;
+        WaterTime += Time.unscaledDeltaTime;
         foreach (Material m in waterMaterials)
         {
             m.SetFloat("_WaveAmplitude", WaveAmplitude);
