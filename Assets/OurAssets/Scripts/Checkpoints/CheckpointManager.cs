@@ -20,6 +20,9 @@ public class CheckpointManager : MonoBehaviour
         }
     }
 
+    public int Lives => checkpointStack.IsEmpty ? 0 : checkpointStack.Peek().Lives;
+    public int Score => checkpointStack.IsEmpty ? 0 : checkpointStack.Peek().Score;
+
     [SerializeField]
     DeathScreen deathScreen;
     [SerializeField, Min(0)]
