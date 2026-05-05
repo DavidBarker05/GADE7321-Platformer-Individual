@@ -257,31 +257,36 @@ public class PlayerMovement : MonoBehaviour
 				direction: -transform.up,
 				hitInfo: out RaycastHit hit0,
 				maxDistance: characterController.radius + groundDistance,
-				layerMask: groundMask)) return false;
+				layerMask: groundMask,
+                queryTriggerInteraction: QueryTriggerInteraction.Ignore)) return false;
 			if (!Physics.Raycast(
 				origin: transform.position + transform.up * characterController.radius + transform.forward * characterController.radius,
 				direction: -transform.up,
 				hitInfo: out RaycastHit hit1,
 				maxDistance: characterController.radius + groundDistance,
-				layerMask: groundMask)) return false;
+				layerMask: groundMask,
+				queryTriggerInteraction: QueryTriggerInteraction.Ignore)) return false;
 			if (!Physics.Raycast(
 				origin: transform.position + transform.up * characterController.radius - transform.forward * characterController.radius,
 				direction: -transform.up,
 				hitInfo: out RaycastHit hit2,
 				maxDistance: characterController.radius + groundDistance,
-				layerMask: groundMask)) return false;
+				layerMask: groundMask,
+				queryTriggerInteraction: QueryTriggerInteraction.Ignore)) return false;
 			if (!Physics.Raycast(
 				origin: transform.position + transform.up * characterController.radius + transform.right * characterController.radius,
 				direction: -transform.up,
 				hitInfo: out RaycastHit hit3,
 				maxDistance: characterController.radius + groundDistance,
-				layerMask: groundMask)) return false;
+				layerMask: groundMask,
+				queryTriggerInteraction: QueryTriggerInteraction.Ignore)) return false;
 			if (!Physics.Raycast(
 				origin: transform.position + transform.up * characterController.radius - transform.right * characterController.radius,
 				direction: -transform.up,
 				hitInfo: out RaycastHit hit4,
 				maxDistance: characterController.radius + groundDistance,
-				layerMask: groundMask)) return false;
+				layerMask: groundMask,
+				queryTriggerInteraction: QueryTriggerInteraction.Ignore)) return false;
 			// David - Check if all points are on the same ground
 			return hit0.collider == hit1.collider && hit1.collider == hit2.collider && hit2.collider == hit3.collider && hit3.collider == hit4.collider;
 		}
