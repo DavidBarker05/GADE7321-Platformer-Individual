@@ -32,7 +32,7 @@ public class StationaryEnemy : BaseEnemy
 		{
 			Vector3 playerPos = m_Player.transform.position;
 			playerPos.y = transform.position.y;
-			Debug.DrawLine(transform.position + Vector3.up * 0.5f, playerPos + Vector3.up * 0.5f, Color.red);
+			Debug.DrawLine(transform.position + Vector3.up * 0.75f, playerPos + Vector3.up * 0.75f, Color.red);
 		}
 	}
 #endif
@@ -56,8 +56,8 @@ public class StationaryEnemy : BaseEnemy
 		}
 		playerPos.y = transform.position.y;
 		if (Physics.Linecast(
-			start: transform.position + Vector3.up * 0.5f,
-			end: playerPos + Vector3.up * 0.5f,
+			start: transform.position + Vector3.up * 0.75f,
+			end: playerPos + Vector3.up * 0.75f,
 			layerMask: ~((1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("TransparentFX")) | (1 << LayerMask.NameToLayer("Ignore Raycast"))),
 			queryTriggerInteraction: QueryTriggerInteraction.Ignore)) // If hit something that isn't player or another enemy (or any other trigger) line of sight is blocked
 		{

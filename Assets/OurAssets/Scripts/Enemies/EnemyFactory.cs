@@ -31,14 +31,20 @@ public class EnemyFactory : MonoBehaviour
         }
 	}
 
-	/// <summary>
-	/// <para>To create a <see cref="StationaryEnemy"/>, args = (<see cref="StationaryEnemy"/> prefab, <see cref="Transform"/> parent)</para>
+    /// <summary>
+    /// <para>To create a <see cref="StationaryEnemy"/>, args = (<see cref="StationaryEnemy"/> prefab, <see cref="Transform"/> parent)</para>
     /// <para>To create a <see cref="PatrollingEnemy"/>, args = (<seealso cref="PatrollingEnemy"/> prefab, <see cref="EnemyPatrolPoints"/> points)</para>
-	/// </summary>
-	/// <typeparam name="T">The type of <see cref="BaseEnemy"/> to create</typeparam>
-	/// <param name="args">The arguments needed to create the enemy</param>
-	/// <returns>A <see cref="BaseEnemy"/> of the type <typeparamref name="T"/></returns>
-	public T Create<T>(params object[] args) where T : BaseEnemy => m_EnemyFactory.Create(typeof(T), args) as T;
+    /// </summary>
+    /// <typeparam name="T">The type of <see cref="BaseEnemy"/> to create</typeparam>
+    /// <param name="args">The arguments needed to create the enemy</param>
+    /// <returns>A <see cref="BaseEnemy"/> of the type <typeparamref name="T"/></returns>
+    public T Create<T>(params object[] args) where T : BaseEnemy
+    {
+        object[] argsAndType = new object[args.Length + 1];
+        args.CopyTo(argsAndType, 1);
+        argsAndType[0] = typeof(T);
+        return m_EnemyFactory.Create(argsAndType) as T;
+    }
 
     class EnemyFactoryInternal : AbstractFactory<BaseEnemy>
 	{

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1578123103153852003}
   - component: {fileID: 2725307652680322916}
   - component: {fileID: 5519537507449174136}
+  - component: {fileID: 2923841855251475163}
   m_Layer: 0
   m_Name: LevelTwoCollectable
   m_TagString: Untagged
@@ -68,6 +69,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Collectable
   scoreGiven: 100
+--- !u!114 &2923841855251475163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7593758382940008215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38bd8af1355b8eb42810d5cd5e0f2d44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectableAnimation
+  m_DegreesPerSecond: 15
+  m_WaveType: 1
+  m_Amplitude: 0.05
+  m_Frequency: 0.5
 --- !u!1001 &890089981244864785
 PrefabInstance:
   m_ObjectHideFlags: 0

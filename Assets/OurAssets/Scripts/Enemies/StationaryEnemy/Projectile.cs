@@ -51,6 +51,7 @@ public class Projectile : MonoBehaviour
 		if (!m_ProjectileData || !m_bActive) return;
 		m_bActive = false;
 		ProjectileFactory.Instance.DeactivateProjectile(this);
+		m_CurrentTravelTime = 0f;
 		gameObject.SetActive(false);
 	}
 }

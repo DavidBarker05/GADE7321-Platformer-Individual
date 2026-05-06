@@ -17,11 +17,25 @@ public class Checkpoint : MonoBehaviour
 
     void OnValidate()
     {
-        GetComponent<Collider>().isTrigger = true; // Ensure collider is a trigger
+        Collider[] colliders = GetComponents<Collider>();
+        foreach (Collider collider in colliders)
+        {
+            collider.isTrigger = true;
+        }
         if (!RespawnPoint) RespawnPoint = transform;
     }
 
-    void Start()
+	void OnEnable()
+	{
+		Collider[] colliders = GetComponents<Collider>();
+		foreach (Collider collider in colliders)
+		{
+			collider.isTrigger = true;
+		}
+		if (!RespawnPoint) RespawnPoint = transform;
+	}
+
+	void Start()
     {
 		if (isStart) CheckpointManager.Instance.SetStartingCheckpoint(this);
         else

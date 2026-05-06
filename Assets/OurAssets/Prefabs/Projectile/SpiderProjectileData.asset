@@ -18,6 +18,6 @@ MonoBehaviour:
   m_CollideWithTriggers: 0
   <Radius>k__BackingField: 0.1
   <Speed>k__BackingField: 15
-  <MaxTravelTime>k__BackingField: 2.5
+  <MaxTravelTime>k__BackingField: 5
   <AxisOfMotion>k__BackingField: 4
   <Mesh>k__BackingField: {fileID: 98497890674055047, guid: c6229566b2a136641a08b13ce395e7bf, type: 3}

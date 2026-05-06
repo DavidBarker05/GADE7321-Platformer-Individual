@@ -38,8 +38,8 @@ AnimatorStateMachine:
   m_Name: Base Layer
   m_ChildStates:
   - serializedVersion: 1
-    m_State: {fileID: 6936507377521233752}
-    m_Position: {x: 320, y: 130, z: 0}
+    m_State: {fileID: 6342616432036651169}
+    m_Position: {x: 330, y: 120, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -49,15 +49,15 @@ AnimatorStateMachine:
   m_EntryPosition: {x: 50, y: 120, z: 0}
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
-  m_DefaultState: {fileID: 6936507377521233752}
---- !u!1102 &6936507377521233752
+  m_DefaultState: {fileID: 6342616432036651169}
+--- !u!1102 &6342616432036651169
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Zombie Idle
+  m_Name: Walking
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -70,7 +70,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: 9b8b1de2df6fb294aaf42e62c9c88eef, type: 3}
+  m_Motion: {fileID: -203655887218126122, guid: 02961c3c63f5e274f940d439172f0881, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
