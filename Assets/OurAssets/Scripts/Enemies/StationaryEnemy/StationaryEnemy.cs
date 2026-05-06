@@ -24,8 +24,8 @@ public class StationaryEnemy : BaseEnemy
 		Gizmos.color = Color.white;
 		Gizmos.DrawWireSphere(transform.position, m_ActivationDistance);
 		Vector3 offsetPos = transform.position + Vector3.up * 0.5f;
-		Vector3 rightLine = new Vector3(Mathf.Sin(m_AttackFOV / 2f * Mathf.Deg2Rad), 0f, Mathf.Cos(m_AttackFOV / 2f * Mathf.Deg2Rad));
-		Vector3 leftLine = new Vector3(Mathf.Sin(-m_AttackFOV / 2f * Mathf.Deg2Rad), 0f, Mathf.Cos(-m_AttackFOV / 2f * Mathf.Deg2Rad));
+		Vector3 rightLine = new Vector3(Mathf.Sin((transform.eulerAngles.y + m_AttackFOV / 2f) * Mathf.Deg2Rad), 0f, Mathf.Cos((transform.eulerAngles.y + m_AttackFOV / 2f) * Mathf.Deg2Rad));
+		Vector3 leftLine = new Vector3(Mathf.Sin((transform.eulerAngles.y + -m_AttackFOV / 2f) * Mathf.Deg2Rad), 0f, Mathf.Cos((transform.eulerAngles.y + -m_AttackFOV / 2f) * Mathf.Deg2Rad));
 		Debug.DrawLine(offsetPos, offsetPos + rightLine * m_ActivationDistance, Color.red);
 		Debug.DrawLine(offsetPos, offsetPos + leftLine * m_ActivationDistance, Color.red);
 	}
