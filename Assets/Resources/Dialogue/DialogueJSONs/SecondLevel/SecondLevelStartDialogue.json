@@ -188,6 +188,20 @@
             "text": "And I think I see the first piece in front of me.",
             "fontSize": 24,
             "charactersPerSecond": 40
+        },
+        {
+            "name": "Merzp",
+            "icon": "Dialogue/DialogueIcons/player",
+            "text": "I can also see parts of my ship stuck in the trees, I wonder if theres any parts left in them?",
+            "fontSize": 24,
+            "charactersPerSecond": 40
+        },
+        {
+            "name": "Merzp",
+            "icon": "Dialogue/DialogueIcons/player",
+            "text": "Luckily I can just jump down the tree and not get hurt thanks to the fact my boots have impeciible shock absorbtion",
+            "fontSize": 24,
+            "charactersPerSecond": 40
         }
     ]
 }
