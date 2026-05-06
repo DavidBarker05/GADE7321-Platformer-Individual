@@ -1,186 +1,193 @@
 {
-	"dialogueItems": [
-		{
-			"name": "Merzp",
-			"icon": "Dialogue/DialogueIcons/player",
-			"text": "Finally, I made it to the island. Let me try reach command.",
-			"fontSize": 24,
-			"charactersPerSecond": 40
-		},
-		{
-			"name": "Story",
-			"icon": "none",
-			"text": "<i>Merzp tries her comms device</i>",
-			"fontSize": 24,
-			"charactersPerSecond": 60
-		},
-		{
-			"name": "Merzp",
-			"icon": "Dialogue/DialogueIcons/player",
-			"text": "Command, hello? Can you hear me? This is Merzp from the expedition crew, do you copy? Over.",
-			"fontSize": 24,
-			"charactersPerSecond": 40
-		},
-		{
-			"name": "Story",
-			"icon": "none",
-			"text": "<i>At last, a voice finally breaks through</i>",
-			"fontSize": 24,
-			"charactersPerSecond": 60
-		},
-		{
-			"name": "Someone Through the Comms Device",
-			"icon": "Dialogue/DialogueIcons/comms",
-			"text": "<i>Merzp is that you? Its Aldrich. Are you alright? Over.</i>",
-			"fontSize": 24,
-			"charactersPerSecond": 40
-		},
-		{
-			"name": "Story",
-			"icon": "none",
-			"text": "<i>A sigh of relief is finally released</i>",
-			"fontSize": 24,
-			"charactersPerSecond": 60
-		},
-		{
-			"name": "Merzp",
-			"icon": "Dialogue/DialogueIcons/player",
-			"text": "Thank Zipt I got through, I need help here Aldrich. Over.",
-			"fontSize": 24,
-			"charactersPerSecond": 40
-		},
-		{
-			"name": "Aldrich Through the Comms Device",
-			"icon": "Dialogue/DialogueIcons/comms",
-			"text": "<i>Do you have any idea where you might be Merzp? Did you activate your ships built in tracker for us to track and locate you?</i>",
-			"fontSize": 24,
-			"charactersPerSecond": 40
-		},
-		{
-			"name": "Story",
-			"icon": "none",
-			"text": "<i>Merzp Lowers her voice</i>",
-			"fontSize": 24,
-			"charactersPerSecond": 60
-		},
-		{
-			"name": "Merzp",
-			"icon": "Dialogue/DialogueIcons/player",
-			"text": "I may or may not have torn my ship apart to get to shore to get a better reception and out of the toxic water...",
-			"fontSize": 24,
-			"charactersPerSecond": 40
-		},
-		{
-			"name": "Aldrich Through the Comms Device",
-			"icon": "Dialogue/DialogueIcons/comms",
-			"text": "<i>What?! Wait did you say toxic water?</i>",
-			"fontSize": 24,
-			"charactersPerSecond": 40
-		},
-		{
-			"name": "Merzp",
-			"icon": "Dialogue/DialogueIcons/player",
-			"text": "Yes, why do you ask commander?",
-			"fontSize": 24,
-			"charactersPerSecond": 40
-		},
-		{
-			"name": "Aldrich Through the Comms Device",
-			"icon": "Dialogue/DialogueIcons/comms",
-			"text": "<i>If you can build a tracker from whatever is left from your ship, we could use the faint ping in whatever system you are in and scan planets for toxic water and rescue you!</i>",
-			"fontSize": 24,
-			"charactersPerSecond": 40
-		},
-		{
-			"name": "Story",
-			"icon": "none",
-			"text": "<i>Merzp screams with joy</i>",
-			"fontSize": 24,
-			"charactersPerSecond": 60
-		},
-		{
-			"name": "Merzp",
-			"icon": "Dialogue/DialogueIcons/player",
-			"text": "That could work, I can see some parts lying around, that broke off when my ship was crashing, whI think I can make something work.",
-			"fontSize": 24,
-			"charactersPerSecond": 40
-		},
-		{
-			"name": "Aldrich Through the Comms Device",
-			"icon": "Dialogue/DialogueIcons/comms",
-			"text": "<i>Well get on with it Merzp I will get a rescue team together for you and I wish you the strength of a hundred bleffens. Over.</i>",
-			"fontSize": 24,
-			"charactersPerSecond": 40
-		},
-		{
-			"name": "Merzp",
-			"icon": "Dialogue/DialogueIcons/player",
-			"text": "Thank you Commander, I hope to see you soon. Over.",
-			"fontSize": 24,
-			"charactersPerSecond": 40
-		},
-		{
-			"name": "Story",
-			"icon": "none",
-			"text": "<i>The transmission ends and Merzp looks around</i>",
-			"fontSize": 24,
-			"charactersPerSecond": 60
-		},
-		{
-			"name": "Merzp",
-			"icon": "Dialogue/DialogueIcons/player",
-			"text": "I am on a deserted planet and I think something is watching me…",
-			"fontSize": 24,
-			"charactersPerSecond": 40
-		},
-		{
-			"name": "Story",
-			"icon": "none",
-			"text": "<i>Merzp turns around to see a zombified being unknown to her</i>",
-			"fontSize": 24,
-			"charactersPerSecond": 60
-		},
-		{
-			"name": "Merzp",
-			"icon": "Dialogue/DialogueIcons/player",
-			"text": "What in the threngs are you?!",
-			"fontSize": 24,
-			"charactersPerSecond": 40
-		},
-		{
-			"name": "Story",
-			"icon": "none",
-			"text": "<i>Before Merzp could respond, the zombie lunges at her</i>",
-			"fontSize": 24,
-			"charactersPerSecond": 60
-		},
-		{
-			"name": "Merzp",
-			"icon": "Dialogue/DialogueIcons/player",
-			"text": "Woah!",
-			"fontSize": 24,
-			"charactersPerSecond": 40
-		},
-		{
-			"name": "Story",
-			"icon": "none",
-			"text": "<i>Merzp dodges out of the way and the zombie seems to continue on some kind of path</i>",
-			"fontSize": 24,
-			"charactersPerSecond": 60
-		},
-		{
-			"name": "Merzp",
-			"icon": "Dialogue/DialogueIcons/player",
-			"text": "Woah, that's strange that it only attacked me when I was in its way. I should probably avoid those weird throgs.",
-			"fontSize": 24,
-			"charactersPerSecond": 40
-		},
-		{
-			"name": "Merzp",
-			"icon": "Dialogue/DialogueIcons/player",
-			"text": "I just need to get six more pieces of my ship in order to build a tracker.",
-			"fontSize": 24,
-			"charactersPerSecond": 40
-		}
-	]
+    "dialogueItems": [
+        {
+            "name": "Merzp",
+            "icon": "Dialogue/DialogueIcons/player",
+            "text": "Finally, I made it to the island. Let me try reach command.",
+            "fontSize": 24,
+            "charactersPerSecond": 40
+        },
+        {
+            "name": "Story",
+            "icon": "none",
+            "text": "<i>Merzp tries her comms device</i>",
+            "fontSize": 24,
+            "charactersPerSecond": 60
+        },
+        {
+            "name": "Merzp",
+            "icon": "Dialogue/DialogueIcons/player",
+            "text": "Command, hello? Can you hear me? This is Merzp from the expedition crew, do you copy? Over.",
+            "fontSize": 24,
+            "charactersPerSecond": 40
+        },
+        {
+            "name": "Story",
+            "icon": "none",
+            "text": "<i>At last, a voice finally breaks through</i>",
+            "fontSize": 24,
+            "charactersPerSecond": 60
+        },
+        {
+            "name": "Someone Through the Comms Device",
+            "icon": "Dialogue/DialogueIcons/comms",
+            "text": "<i>Merzp is that you? Its Aldrich. Are you alright? Over.</i>",
+            "fontSize": 24,
+            "charactersPerSecond": 40
+        },
+        {
+            "name": "Story",
+            "icon": "none",
+            "text": "<i>A sigh of relief is finally released</i>",
+            "fontSize": 24,
+            "charactersPerSecond": 60
+        },
+        {
+            "name": "Merzp",
+            "icon": "Dialogue/DialogueIcons/player",
+            "text": "Thank Zipt I got through, I need help here Aldrich. Over.",
+            "fontSize": 24,
+            "charactersPerSecond": 40
+        },
+        {
+            "name": "Aldrich Through the Comms Device",
+            "icon": "Dialogue/DialogueIcons/comms",
+            "text": "<i>Do you have any idea where you might be Merzp? Did you activate your ships built in tracker for us to track and locate you?</i>",
+            "fontSize": 24,
+            "charactersPerSecond": 40
+        },
+        {
+            "name": "Story",
+            "icon": "none",
+            "text": "<i>Merzp Lowers her voice</i>",
+            "fontSize": 24,
+            "charactersPerSecond": 60
+        },
+        {
+            "name": "Merzp",
+            "icon": "Dialogue/DialogueIcons/player",
+            "text": "I may or may not have torn my ship apart to get to shore to get a better reception and out of the toxic water...",
+            "fontSize": 24,
+            "charactersPerSecond": 40
+        },
+        {
+            "name": "Aldrich Through the Comms Device",
+            "icon": "Dialogue/DialogueIcons/comms",
+            "text": "<i>What?! Wait did you say toxic water?</i>",
+            "fontSize": 24,
+            "charactersPerSecond": 40
+        },
+        {
+            "name": "Merzp",
+            "icon": "Dialogue/DialogueIcons/player",
+            "text": "Yes, why do you ask commander?",
+            "fontSize": 24,
+            "charactersPerSecond": 40
+        },
+        {
+            "name": "Aldrich Through the Comms Device",
+            "icon": "Dialogue/DialogueIcons/comms",
+            "text": "<i>If you can build a tracker from whatever is left from your ship, we could use the faint ping in whatever system you are in and scan planets for toxic water and rescue you!</i>",
+            "fontSize": 24,
+            "charactersPerSecond": 40
+        },
+        {
+            "name": "Story",
+            "icon": "none",
+            "text": "<i>Merzp screams with joy</i>",
+            "fontSize": 24,
+            "charactersPerSecond": 60
+        },
+        {
+            "name": "Merzp",
+            "icon": "Dialogue/DialogueIcons/player",
+            "text": "That could work, I can see some parts lying around, that broke off when my ship was crashing, whI think I can make something work.",
+            "fontSize": 24,
+            "charactersPerSecond": 40
+        },
+        {
+            "name": "Aldrich Through the Comms Device",
+            "icon": "Dialogue/DialogueIcons/comms",
+            "text": "<i>Well get on with it Merzp I will get a rescue team together for you and I wish you the strength of a hundred bleffens. Over.</i>",
+            "fontSize": 24,
+            "charactersPerSecond": 40
+        },
+        {
+            "name": "Merzp",
+            "icon": "Dialogue/DialogueIcons/player",
+            "text": "Thank you Commander, I hope to see you soon. Over.",
+            "fontSize": 24,
+            "charactersPerSecond": 40
+        },
+        {
+            "name": "Story",
+            "icon": "none",
+            "text": "<i>The transmission ends and Merzp looks around</i>",
+            "fontSize": 24,
+            "charactersPerSecond": 60
+        },
+        {
+            "name": "Merzp",
+            "icon": "Dialogue/DialogueIcons/player",
+            "text": "I am on a deserted planet and I think something is watching me…",
+            "fontSize": 24,
+            "charactersPerSecond": 40
+        },
+        {
+            "name": "Story",
+            "icon": "none",
+            "text": "<i>Merzp turns around to see a zombified being unknown to her</i>",
+            "fontSize": 24,
+            "charactersPerSecond": 60
+        },
+        {
+            "name": "Merzp",
+            "icon": "Dialogue/DialogueIcons/player",
+            "text": "What in the threngs are you?!",
+            "fontSize": 24,
+            "charactersPerSecond": 40
+        },
+        {
+            "name": "Story",
+            "icon": "none",
+            "text": "<i>Before Merzp could respond, the zombie lunges at her</i>",
+            "fontSize": 24,
+            "charactersPerSecond": 60
+        },
+        {
+            "name": "Merzp",
+            "icon": "Dialogue/DialogueIcons/player",
+            "text": "Woah!",
+            "fontSize": 24,
+            "charactersPerSecond": 40
+        },
+        {
+            "name": "Story",
+            "icon": "none",
+            "text": "<i>Merzp dodges out of the way and the zombie seems to continue on some kind of path</i>",
+            "fontSize": 24,
+            "charactersPerSecond": 60
+        },
+        {
+            "name": "Merzp",
+            "icon": "Dialogue/DialogueIcons/player",
+            "text": "Woah, that's strange that it only attacked me when I was in its way. I should probably avoid those weird throgs.",
+            "fontSize": 24,
+            "charactersPerSecond": 40
+        },
+        {
+            "name": "Merzp",
+            "icon": "Dialogue/DialogueIcons/player",
+            "text": "I just need to get six more pieces of my ship in order to build a tracker.",
+            "fontSize": 24,
+            "charactersPerSecond": 40
+        },
+        {
+            "name": "Merzp",
+            "icon": "Dialogue/DialogueIcons/player",
+            "text": "And I think I see the first piece in front of me.",
+            "fontSize": 24,
+            "charactersPerSecond": 40
+        }
+    ]
 }
