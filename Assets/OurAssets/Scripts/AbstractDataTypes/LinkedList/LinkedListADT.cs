@@ -1,4 +1,7 @@
-public class LinkedListADT<T>
+using System.Collections;
+using System.Collections.Generic;
+
+public class LinkedListADT<T> : ICollection<T>, IReadOnlyCollection<T>
 {
 	public LinkedListADTNode<T> Front { get; private set; } = null;
 	public LinkedListADTNode<T> Back { get; private set; } = null;
@@ -6,7 +9,16 @@ public class LinkedListADT<T>
 	public int Count { get; private set; } = 0;
 	public bool IsEmpty => Count <= 0;
 
+	public bool IsReadOnly => false;
+
 	public LinkedListADT(bool isCircular = true) { IsCircular = isCircular; }
+
+	public LinkedListADT(IEnumerable<T> collection, bool isCircular = true)
+	{
+		if (collection == null) throw new System.ArgumentNullException("collection");
+		foreach (T item in collection) AddBack(item);
+		IsCircular = isCircular;
+	}
 
 	public void AddFront(LinkedListADTNode<T> node)
 	{
@@ -70,6 +82,8 @@ public class LinkedListADT<T>
 		return newNode;
 	}
 
+	public void Add(T item) => AddBack(item);
+
 	public LinkedListADTNode<T> FindFirst(T value)
 	{
 		LinkedListADTNode<T> current = Front;
@@ -90,6 +104,19 @@ public class LinkedListADT<T>
 			current = current._previous == Back ? null : current._previous;
 		}
 		return null;
+	}
+
+	public void CopyTo(T[] array, int arrayIndex)
+	{
+		if (array == null) throw new System.ArgumentNullException("array");
+		if (arrayIndex < 0 || arrayIndex > array.Length) throw new System.IndexOutOfRangeException("arrayIndex out of range");
+		if (array.Length - arrayIndex < Count) throw new System.ArgumentException("not enough space for the LinkedListADT in array");
+		LinkedListADTNode<T> current = Front;
+		while (current != null)
+		{
+			array[arrayIndex++] = current.Value;
+			current = current != Back ? current.Next : null;
+		}
 	}
 
 	public void Remove(LinkedListADTNode<T> node)
@@ -121,6 +148,17 @@ public class LinkedListADT<T>
 	{
 		LinkedListADTNode<T> node = FindLast(value);
 		if (node != null) InternalRemove(node);
+	}
+
+	public bool Remove(T item)
+	{
+		LinkedListADTNode<T> node = FindFirst(item);
+		if (node != null)
+		{
+			Remove(node);
+			return true;
+		}
+		return false;
 	}
 
 	public bool Contains(LinkedListADTNode<T> node) => node.List == this;
@@ -176,7 +214,7 @@ public class LinkedListADT<T>
 
 	private void InternalRemove(LinkedListADTNode<T> node)
 	{
-		if (Count  == 0) return;
+		if (Count == 0) return;
 		if (Count == 1)
 		{
 			Front = null;
@@ -191,6 +229,51 @@ public class LinkedListADT<T>
 		}
 		node.FreeMemory();
 		--Count;
+	}
+
+	public IEnumerator<T> GetEnumerator() => new Enumerator(this);
+
+	IEnumerator IEnumerable.GetEnumerator()
+	{
+		return GetEnumerator();
+	}
+
+	public struct Enumerator : IEnumerator<T>, IEnumerator
+	{
+		public T Current => m_CurrentValue;
+
+		object IEnumerator.Current => Current;
+
+		public void Dispose() { }
+
+		public bool MoveNext()
+		{
+			if (m_CurrentNode == null || m_Index == m_List.Count) return false;
+			m_CurrentValue = m_CurrentNode.Value;
+			m_CurrentNode = m_CurrentNode.Next;
+			++m_Index;
+			return true;
+		}
+
+		public void Reset()
+		{
+			m_CurrentNode = m_List.Front;
+			m_CurrentValue = default;
+			m_Index = 0;
+		}
+
+		internal Enumerator(LinkedListADT<T> list)
+		{
+			m_List = list;
+			m_CurrentNode = list.Front;
+			m_CurrentValue = default;
+			m_Index = 0;
+		}
+
+		LinkedListADT<T> m_List;
+		LinkedListADTNode<T> m_CurrentNode;
+		T m_CurrentValue;
+		int m_Index;
 	}
 }
 

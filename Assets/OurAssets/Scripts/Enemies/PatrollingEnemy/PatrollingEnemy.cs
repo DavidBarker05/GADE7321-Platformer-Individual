@@ -15,29 +15,19 @@ public class PatrollingEnemy : BaseEnemy
 
 	void Awake() => m_Agent = GetComponent<NavMeshAgent>();
 
-    void Update()
-    {
+	void Update()
+	{
 		if (!Enabled
 			|| m_CurrentDestination == null
 			|| m_Agent.pathPending
 			|| m_Agent.remainingDistance > m_Agent.stoppingDistance) return;
 		m_CurrentDestination = m_CurrentDestination.Next;
 		if (m_CurrentDestination != null) m_Agent.SetDestination(m_CurrentDestination.Value.position);
-    }
+	}
 
 	public void SetPatrolPoints(LinkedListADT<Transform> patrolPoints)
 	{
-		if (patrolPoints.IsCircular) m_PatrolPoints = patrolPoints;
-		else
-		{
-			m_PatrolPoints = new LinkedListADT<Transform>(); // Circular by default
-			LinkedListADTNode<Transform> currentNode = patrolPoints.Front;
-			while (currentNode != null) // Go through all the nodes in the non-circular list
-			{
-				m_PatrolPoints.AddBack(currentNode); // Keep adding to the back of the linked list
-				currentNode = currentNode.Next; // If not circular Back's Next will make currentNode null
-			}
-		}
+		m_PatrolPoints = patrolPoints.IsCircular ? patrolPoints : new LinkedListADT<Transform>(patrolPoints); // Circular by default
 		m_CurrentDestination = m_PatrolPoints.Front; // If empty list this will be null and the
 	}
 }
