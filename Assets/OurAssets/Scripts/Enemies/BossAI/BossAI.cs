@@ -8,7 +8,7 @@ public class BossAI : MonoBehaviour
 
     [Header("Patrol")]
     public Transform[] waypoints;
-    public float patrolSpeed = 2f;
+    public float patrolSpeed = 9f;
     private int waypointIndex = 0;
 
     [Header("Detection")]
