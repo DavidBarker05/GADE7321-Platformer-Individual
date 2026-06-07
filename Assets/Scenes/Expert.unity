@@ -2506,7 +2506,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   attackRange: 2.5
-  chaseSpeed: 5
+  chaseSpeed: 12
 --- !u!195 &565393823
 NavMeshAgent:
   m_ObjectHideFlags: 0

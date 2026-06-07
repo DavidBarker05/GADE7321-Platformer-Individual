@@ -19,7 +19,7 @@ public class BossAI : MonoBehaviour
 
     [Header("Combat")]
     public float attackRange = 2.5f;
-    public float chaseSpeed = 5f;
+    public float chaseSpeed = 12f;
 
     private NavMeshAgent agent;
 
