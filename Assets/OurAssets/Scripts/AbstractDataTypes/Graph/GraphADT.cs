@@ -113,8 +113,8 @@ public class GraphADT<T>
         if (startNode.Graph != this) throw new System.ArgumentException("startNode doesn't belong to this graph");
         if (endNode.Graph != this) throw new System.ArgumentException("endNode doesn't belong to this graph");
         QueueADT<GraphADTNode<T>> toSearch = new QueueADT<GraphADTNode<T>>();
-        HashSet<GraphADTNode<T>> searched = new HashSet<GraphADTNode<T>>();
-        HashMapADT<GraphADTNode<T>, GraphADTNode<T>> previousNodes = new HashMapADT<GraphADTNode<T>, GraphADTNode<T>>();
+        HashSet<GraphADTNode<T>> searched = new HashSet<GraphADTNode<T>>(Count);
+        HashMapADT<GraphADTNode<T>, GraphADTNode<T>> previousNodes = new HashMapADT<GraphADTNode<T>, GraphADTNode<T>>(Count);
         toSearch.Enqueue(startNode);
         searched.Add(startNode);
         previousNodes[startNode] = null;
@@ -123,11 +123,11 @@ public class GraphADT<T>
             GraphADTNode<T> current = toSearch.Dequeue();
             if (current == endNode)
             {
-                List<GraphADTNode<T>> path = new List<GraphADTNode<T>>();
+                StackADT<GraphADTNode<T>> path = new StackADT<GraphADTNode<T>>();
                 GraphADTNode<T> _current = endNode;
                 while (_current != null)
                 {
-                    path.Insert(0, _current);
+                    path.Push(current);
                     _current = previousNodes[_current];
                 }
                 return path.ToArray();
@@ -147,8 +147,8 @@ public class GraphADT<T>
     {
         if (startNode.Graph != this) throw new System.ArgumentException("startNode doesn't belong to this graph");
         QueueADT<GraphADTNode<T>> toSearch = new QueueADT<GraphADTNode<T>>();
-        HashSet<GraphADTNode<T>> searched = new HashSet<GraphADTNode<T>>();
-        HashMapADT<GraphADTNode<T>, GraphADTNode<T>> previousNodes = new HashMapADT<GraphADTNode<T>, GraphADTNode<T>>();
+        HashSet<GraphADTNode<T>> searched = new HashSet<GraphADTNode<T>>(Count);
+        HashMapADT<GraphADTNode<T>, GraphADTNode<T>> previousNodes = new HashMapADT<GraphADTNode<T>, GraphADTNode<T>>(Count);
         toSearch.Enqueue(startNode);
         searched.Add(startNode);
         previousNodes[startNode] = null;
@@ -157,11 +157,11 @@ public class GraphADT<T>
             GraphADTNode<T> current = toSearch.Dequeue();
             if (m_Comparer.Equals(current._value, value))
             {
-                List<GraphADTNode<T>> path = new List<GraphADTNode<T>>();
+                StackADT<GraphADTNode<T>> path = new StackADT<GraphADTNode<T>>();
                 GraphADTNode<T> _current = current;
                 while (_current != null)
                 {
-                    path.Insert(0, _current);
+                    path.Push(current);
                     _current = previousNodes[_current];
                 }
                 return path.ToArray();
@@ -181,7 +181,7 @@ public class GraphADT<T>
     {
         if (startNode.Graph != this) throw new System.ArgumentException("startNode doesn't belong to this graph");
         QueueADT<GraphADTNode<T>> toSearch = new QueueADT<GraphADTNode<T>>();
-        HashSet<GraphADTNode<T>> searched = new HashSet<GraphADTNode<T>>();
+        HashSet<GraphADTNode<T>> searched = new HashSet<GraphADTNode<T>>(Count);
         toSearch.Enqueue(startNode);
         searched.Add(startNode);
         while (!toSearch.IsEmpty)
@@ -202,7 +202,7 @@ public class GraphADT<T>
     {
         if (startNode.Graph != this) throw new System.ArgumentException("startNode doesn't belong to this graph");
         QueueADT<GraphADTNode<T>> toSearch = new QueueADT<GraphADTNode<T>>();
-        HashSet<GraphADTNode<T>> searched = new HashSet<GraphADTNode<T>>();
+        HashSet<GraphADTNode<T>> searched = new HashSet<GraphADTNode<T>>(Count);
         toSearch.Enqueue(startNode);
         searched.Add(startNode);
         while (!toSearch.IsEmpty)
@@ -227,8 +227,8 @@ public class GraphADT<T>
         if (startNode.Graph != this) throw new System.ArgumentException("startNode doesn't belong to this graph");
         if (endNode.Graph != this) throw new System.ArgumentException("endNode doesn't belong to this graph");
         StackADT<GraphADTNode<T>> toSearch = new StackADT<GraphADTNode<T>>();
-        HashMapADT<GraphADTNode<T>, int> nextConnectionIndex = new HashMapADT<GraphADTNode<T>, int>();
-        HashSet<GraphADTNode<T>> searched = new HashSet<GraphADTNode<T>>();
+        HashMapADT<GraphADTNode<T>, int> nextConnectionIndex = new HashMapADT<GraphADTNode<T>, int>(Count);
+        HashSet<GraphADTNode<T>> searched = new HashSet<GraphADTNode<T>>(Count);
         List<GraphADTNode<T>> path = new List<GraphADTNode<T>>();
         toSearch.Push(startNode);
         nextConnectionIndex[startNode] = 0;
@@ -236,7 +236,7 @@ public class GraphADT<T>
         path.Add(startNode);
         while (!toSearch.IsEmpty)
         {
-            GraphADTNode<T> current = toSearch.Peek();
+            GraphADTNode<T> current = toSearch.Top;
             if (current == endNode || nextConnectionIndex[current] == current.NumConnections)
             {
                 if (current == endNode) return path.ToArray();
@@ -261,8 +261,8 @@ public class GraphADT<T>
     {
         if (startNode.Graph != this) throw new System.ArgumentException("startNode doesn't belong to this graph");
         StackADT<GraphADTNode<T>> toSearch = new StackADT<GraphADTNode<T>>();
-        HashMapADT<GraphADTNode<T>, int> nextConnectionIndex = new HashMapADT<GraphADTNode<T>, int>();
-        HashSet<GraphADTNode<T>> searched = new HashSet<GraphADTNode<T>>();
+        HashMapADT<GraphADTNode<T>, int> nextConnectionIndex = new HashMapADT<GraphADTNode<T>, int>(Count);
+        HashSet<GraphADTNode<T>> searched = new HashSet<GraphADTNode<T>>(Count);
         List<GraphADTNode<T>> path = new List<GraphADTNode<T>>();
         toSearch.Push(startNode);
         nextConnectionIndex[startNode] = 0;
@@ -270,7 +270,7 @@ public class GraphADT<T>
         path.Add(startNode);
         while (!toSearch.IsEmpty)
         {
-            GraphADTNode<T> current = toSearch.Peek();
+            GraphADTNode<T> current = toSearch.Top;
             if (m_Comparer.Equals(current._value, value) || nextConnectionIndex[current] == current.NumConnections)
             {
                 if (m_Comparer.Equals(current._value, value)) return path.ToArray();
@@ -295,14 +295,14 @@ public class GraphADT<T>
     {
         if (startNode.Graph != this) throw new System.ArgumentException("startNode doesn't belong to this graph");
         StackADT<GraphADTNode<T>> toSearch = new StackADT<GraphADTNode<T>>();
-        HashMapADT<GraphADTNode<T>, int> nextConnectionIndex = new HashMapADT<GraphADTNode<T>, int>();
-        HashSet<GraphADTNode<T>> searched = new HashSet<GraphADTNode<T>>();
+        HashMapADT<GraphADTNode<T>, int> nextConnectionIndex = new HashMapADT<GraphADTNode<T>, int>(Count);
+        HashSet<GraphADTNode<T>> searched = new HashSet<GraphADTNode<T>>(Count);
         toSearch.Push(startNode);
         nextConnectionIndex[startNode] = 0;
         searched.Add(startNode);
         while (!toSearch.IsEmpty)
         {
-            GraphADTNode<T> current = toSearch.Peek();
+            GraphADTNode<T> current = toSearch.Top;
             if (m_Comparer.Equals(current._value, value) || nextConnectionIndex[current] == current.NumConnections)
             {
                 if (m_Comparer.Equals(current._value, value)) return current;
@@ -325,14 +325,14 @@ public class GraphADT<T>
     {
         if (startNode.Graph != this) throw new System.ArgumentException("startNode doesn't belong to this graph");
         StackADT<GraphADTNode<T>> toSearch = new StackADT<GraphADTNode<T>>();
-        HashMapADT<GraphADTNode<T>, int> nextConnectionIndex = new HashMapADT<GraphADTNode<T>, int>();
-        HashSet<GraphADTNode<T>> searched = new HashSet<GraphADTNode<T>>();
+        HashMapADT<GraphADTNode<T>, int> nextConnectionIndex = new HashMapADT<GraphADTNode<T>, int>(Count);
+        HashSet<GraphADTNode<T>> searched = new HashSet<GraphADTNode<T>>(Count);
         toSearch.Push(startNode);
         nextConnectionIndex[startNode] = 0;
         searched.Add(startNode);
         while (!toSearch.IsEmpty)
         {
-            GraphADTNode<T> current = toSearch.Peek();
+            GraphADTNode<T> current = toSearch.Top;
             if (m_Comparer.Equals(current._value, value) || nextConnectionIndex[current] == current.NumConnections)
             {
                 if (m_Comparer.Equals(current._value, value))

@@ -8,7 +8,6 @@ using System.Collections.Generic;
 
 // This code ended up being a mix of functionality from c# and c++
 // combining some of the feature I prefer from both
-
 public class HashMapADT<TKey, TValue> : ICollection<KeyValuePair<TKey, TValue>>, IReadOnlyCollection<KeyValuePair<TKey, TValue>>
 {
     public int Count { get; private set; }
@@ -21,8 +20,8 @@ public class HashMapADT<TKey, TValue> : ICollection<KeyValuePair<TKey, TValue>>,
     {
         if (capacity < 0) throw new ArgumentException("capacity needs to be greater than or equal to 0");
         if (capacity > 0) Initialise(capacity);
+        else m_Buckets = Array.Empty<LinkedListADT<KeyValuePair<TKey, TValue>>>();
         Count = 0;
-        m_NextFreeIndex = -1;
         m_KeyComparer = EqualityComparer<TKey>.Default;
         m_ValueComparer = EqualityComparer<TValue>.Default;
     }
@@ -30,24 +29,25 @@ public class HashMapADT<TKey, TValue> : ICollection<KeyValuePair<TKey, TValue>>,
     public HashMapADT(IEnumerable<KeyValuePair<TKey, TValue>> collection)
     {
         if (collection == null) throw new ArgumentNullException(nameof(collection));
+        Initialise(1);
         Count = 0;
-        m_NextFreeIndex = -1;
         m_KeyComparer = EqualityComparer<TKey>.Default;
         m_ValueComparer = EqualityComparer<TValue>.Default;
-        foreach (KeyValuePair<TKey, TValue> item in collection) Add(item);
+        foreach (var item in collection) Add(item);
     }
 
     public TValue this[TKey key]
     {
         get
         {
-            int index = GetEntryIndex(key);
-            return index >= 0 ? m_Entries[index].Value : default;
+            var entry = GetEntry(key);
+            if (entry) return entry.Value.Value;
+            return default;
         }
         set => Insert(key, value); // Update key's value or insert if it doesn't exist similar to c++
     }
 
-    public bool ContainsKey(TKey key) => GetEntryIndex(key) >= 0;
+    public bool ContainsKey(TKey key) => GetEntry(key);
 
     public void Add(KeyValuePair<TKey, TValue> item)
     {
@@ -63,197 +63,172 @@ public class HashMapADT<TKey, TValue> : ICollection<KeyValuePair<TKey, TValue>>,
 
     public void Clear()
     {
-        // I love you garbage collector for letting me just set them to null <3
-        m_Buckets = null;
-        m_Entries = null;
+        m_Buckets = Array.Empty<LinkedListADT<KeyValuePair<TKey, TValue>>>();
+        m_Capacity = 0;
         Count = 0;
-        m_NextFreeIndex = -1;
     }
 
     public bool Contains(KeyValuePair<TKey, TValue> item)
     {
         if (item.Key == null) throw new ArgumentNullException(nameof(item.Key));
-        int index = GetEntryIndex(item.Key);
-        return index >= 0 && m_ValueComparer.Equals(m_Entries[index].Value, item.Value);
+        var entry = GetEntry(item.Key);
+        return entry && m_ValueComparer.Equals(entry.Value.Value, item.Value);
     }
 
     public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
     {
         if (array == null) throw new ArgumentNullException(nameof(array));
         if (arrayIndex < 0 || arrayIndex > array.Length) throw new IndexOutOfRangeException($"{nameof(arrayIndex)} out of range");
-        if (array.Length - arrayIndex < Count) throw new ArgumentException($"not enough space for the HashMapATD in {nameof(array)}");
-        for (int i = 0; i < m_Entries.Length; ++i)
+        if (array.Length - arrayIndex < Count) throw new ArgumentException($"not enough space for the HashMapADT in {nameof(array)}");
+        foreach (var bucket in m_Buckets)
         {
-            if (m_Entries[i].HashCode >= 0) array[arrayIndex++] = new KeyValuePair<TKey, TValue>(m_Entries[i].Key, m_Entries[i].Value);
+            if (bucket.IsEmpty) continue;
+            bucket.CopyTo(array, arrayIndex);
+            arrayIndex += bucket.Count;
         }
     }
 
-    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => new Enumerator(this);
+    public Enumerator GetEnumerator() => new Enumerator(this);
 
     public bool Remove(KeyValuePair<TKey, TValue> item)
     {
         if (item.Key == null) throw new ArgumentNullException(nameof(item.Key));
-        int index = GetEntryIndex(item.Key);
-        if (index >= 0 && m_ValueComparer.Equals(m_Entries[index].Value, item.Value))
-        {
-            Remove(item.Key);
-            return true;
-        }
-        return false;
+        var entry = GetEntry(item.Key);
+        if (!entry || !m_ValueComparer.Equals(entry.Value.Value, item.Value)) return false;
+        int bucketIndex = BucketIndex(item.Key);
+        m_Buckets[bucketIndex].Remove(entry);
+        if (--Count < m_Capacity / 4) Resize(m_Capacity / 2);
+        return true;
     }
 
     public void Remove(TKey key)
     {
         if (key == null) throw new ArgumentNullException(nameof(key));
-        if (m_Buckets == null) return;
-        var (hashCode, bucketIndex, entryIndex) = Hash(key);
-        int prev = -1;
-        for (int i = entryIndex; i >= 0; prev = i, i = m_Entries[i].NextIndex)
-        {
-            if (m_Entries[i].HashCode == hashCode && m_KeyComparer.Equals(m_Entries[i].Key, key))
-            {
-                if (prev < 0) m_Buckets[bucketIndex] = m_Entries[i].NextIndex; // Head so set the bucket to point at next index instead
-                else m_Entries[prev].NextIndex = m_Entries[i].NextIndex; // Not head so set entry that pointed to this, to point at whatever this pointed to
-                m_Entries[i].HashCode = -1;
-                m_Entries[i].NextIndex = m_NextFreeIndex;
-                m_Entries[i].Key = default;
-                m_Entries[i].Value = default;
-                m_NextFreeIndex = i;
-                if (--Count < m_Entries.Length / 4) Resize(m_Entries.Length / 2);
-                return; // Found so stop looping
-            }
-        }
+        var entry = GetEntry(key);
+        if (!entry) return;
+        int bucketIndex = BucketIndex(key);
+        m_Buckets[bucketIndex].Remove(entry);
+        if (--Count < m_Capacity / 4) Resize(m_Capacity / 2);
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    (int hashCode, int bucketIndex, int entryIndex) Hash(TKey key)
+    IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() => GetEnumerator();
+
+    int BucketIndex(TKey key)
     {
         int hashCode = m_KeyComparer.GetHashCode(key) & int.MaxValue; // Keep positive
-        int bucketIndex = hashCode % m_Buckets.Length;
-        int entryIndex = m_Buckets[bucketIndex];
-        return (hashCode, bucketIndex, entryIndex);
+        return hashCode % m_Buckets.Length;
+    }
+
+    LinkedListADTNode<KeyValuePair<TKey, TValue>> GetEntry(TKey key)
+    {
+        if (key == null) throw new ArgumentNullException(nameof(key));
+        if (m_Buckets.Length == 0) return null;
+        int bucketIndex = BucketIndex(key);
+        if (m_Buckets[bucketIndex].IsEmpty) return null;
+        return m_Buckets[bucketIndex].FindFirst(kvp => m_KeyComparer.Equals(kvp.Key, key));
     }
 
     void Initialise(int capacity)
     {
-        m_Buckets = new int[capacity];
-        Array.Fill(m_Buckets, -1);
-        m_Entries = new Entry[capacity];
+        m_Capacity = capacity;
+        m_Buckets = new LinkedListADT<KeyValuePair<TKey, TValue>>[Math.Max(1, capacity / 2)];
+        PopulateBuckets();
     }
 
-    int GetEntryIndex(TKey key)
+    void Insert(TKey key, TValue value)
     {
-        if (key == null) throw new ArgumentNullException(nameof(key));
-        if (m_Buckets != null)
+        if (m_Capacity == 0) Initialise(1);
+        int bucketIndex = BucketIndex(key);
+        if (m_Buckets[bucketIndex].Count > 0)
         {
-            var (hashCode, bucketIndex, entryIndex) = Hash(key);
-            for (int i = entryIndex; i >= 0; i = m_Entries[i].NextIndex)
+            var entry = m_Buckets[bucketIndex].FindFirst(kvp => m_KeyComparer.Equals(kvp.Key, key));
+            if (entry)
             {
-                if (m_Entries[i].HashCode == hashCode && m_KeyComparer.Equals(m_Entries[i].Key, key))
-                    return i;
-            }
-        }
-        return -1;
-    }
-
-    private void Insert(TKey key, TValue value)
-    {
-        if (m_Buckets == null) Initialise(1);
-        var (hashCode, bucketIndex, entryIndex) = Hash(key);
-        for (int i = entryIndex; i >= 0; i = m_Entries[i].NextIndex)
-        {
-            if (m_Entries[i].HashCode == hashCode && m_KeyComparer.Equals(m_Entries[i].Key, key))
-            {
-                m_Entries[i].Value = value;
+                entry.Value = new KeyValuePair<TKey, TValue>(key, value);
                 return;
             }
         }
-        int index = -1;
-        if (m_NextFreeIndex >= 0)
+        if (Count == m_Capacity)
         {
-            index = m_NextFreeIndex;
-            m_NextFreeIndex = m_Entries[m_NextFreeIndex].NextIndex;
+            Resize(m_Capacity * 2);
+            bucketIndex = BucketIndex(key);
         }
-        else if (Count >= m_Entries.Length)
-        {
-            Resize(Count * 2);
-            (hashCode, bucketIndex, entryIndex) = Hash(key);
-        }
-        if (index < 0) index = Count;
-        m_Entries[index].HashCode = hashCode;
-        m_Entries[index].NextIndex = entryIndex;
-        m_Entries[index].Key = key;
-        m_Entries[index].Value = value;
-        m_Buckets[bucketIndex] = index;
+        m_Buckets[bucketIndex].AddBack(new KeyValuePair<TKey, TValue>(key, value));
         ++Count;
     }
 
-    // Set new capacity and recalculate hashes
-    void Resize(int newCapacity)
+    void PopulateBuckets()
     {
-        m_Buckets = new int[newCapacity];
-        Array.Fill(m_Buckets, -1);
-        Entry[] entries = m_Entries;
-        m_Entries = new Entry[newCapacity];
-        Count = 0;
-        foreach (Entry entry in entries)
+        for (int i = 0; i < m_Buckets.Length; ++i)
         {
-            if (entry.HashCode >= 0) Insert(entry.Key, entry.Value);
+            m_Buckets[i] = new LinkedListADT<KeyValuePair<TKey, TValue>>(false);
         }
     }
 
-    struct Entry
+    void Resize(int newCapacity)
     {
-        public int HashCode;
-        public int NextIndex;
-        public TKey Key;
-        public TValue Value;
+        m_Capacity = newCapacity;
+        Count = 0;
+        if (newCapacity == 0)
+        {
+            m_Buckets = Array.Empty<LinkedListADT<KeyValuePair<TKey, TValue>>>();
+            return;
+        }
+        var entries = new KeyValuePair<TKey, TValue>[Count];
+        CopyTo(entries, 0);
+        if (newCapacity == 1) m_Buckets = new LinkedListADT<KeyValuePair<TKey, TValue>>[1];
+        else m_Buckets = new LinkedListADT<KeyValuePair<TKey, TValue>>[newCapacity / 2];
+        PopulateBuckets();
+        foreach (var entry in entries) Insert(entry.Key, entry.Value);
     }
 
-    int[] m_Buckets;
-    Entry[] m_Entries;
-    int m_NextFreeIndex;
+    LinkedListADT<KeyValuePair<TKey, TValue>>[] m_Buckets;
+    int m_Capacity;
     IEqualityComparer<TKey> m_KeyComparer;
     IEqualityComparer<TValue> m_ValueComparer;
 
     public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
     {
-        public KeyValuePair<TKey, TValue> Current => new KeyValuePair<TKey, TValue>(m_Current.Key, m_Current.Value);
+        public KeyValuePair<TKey, TValue> Current => m_Current?.Value ?? default;
 
         object IEnumerator.Current => Current;
 
         internal Enumerator(HashMapADT<TKey, TValue> hashMap)
         {
             m_HashMap = hashMap;
-            m_Index = 0;
-            m_Current = default;
+            m_BucketIndex = 0;
+            m_Current = null;
         }
 
         public void Dispose() { }
 
         public bool MoveNext()
         {
-            while (m_Index < m_HashMap.m_Entries.Length)
+            if (!m_Current || m_Current == m_HashMap.m_Buckets[m_BucketIndex].Back)
             {
-                Entry entry = m_HashMap.m_Entries[m_Index++];
-                if (entry.HashCode >= 0)
+                while (m_BucketIndex < m_HashMap.m_Buckets.Length)
                 {
-                    m_Current = entry;
+                    var bucket = m_HashMap.m_Buckets[m_BucketIndex++];
+                    if (bucket.IsEmpty) continue;
+                    m_Current = bucket.Front;
                     return true;
                 }
+                return false;
             }
-            return false;
+            m_Current = m_Current.Next;
+            return true;
         }
 
         public void Reset()
         {
-            m_Index = 0;
-            m_Current = default;
+            m_BucketIndex = 0;
+            m_Current = null;
         }
 
         HashMapADT<TKey, TValue> m_HashMap;
-        int m_Index;
-        Entry m_Current;
+        int m_BucketIndex;
+        LinkedListADTNode<KeyValuePair<TKey, TValue>> m_Current;
     }
 }

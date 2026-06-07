@@ -1,7 +1,9 @@
 {
     "name": "HashMapAssembly",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:b4eb2d7e8bd8d5e42a14b299d7a6b7b9"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

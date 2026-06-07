@@ -10,14 +10,14 @@ public class DialogueManager : MonoBehaviour
             // Lazy instantiation
             if (!_instance)
             {
-                GameObject go = new GameObject("DialogueManager");
+                GameObject go = new GameObject(nameof(DialogueManager));
                 _instance = go.AddComponent<DialogueManager>();
             }
             return _instance;
         }
     }
 
-    readonly QueueADT<DialogueItem> dialogueQueue = new QueueADT<DialogueItem>();
+    QueueADT<DialogueItem> dialogueQueue;
 
     Dialogue currentDialogue;
     public DialogueItem CurrentDialogueItem { get; private set; }
@@ -33,13 +33,13 @@ public class DialogueManager : MonoBehaviour
         if (dialogue == null) return;
         Clear();
         currentDialogue = dialogue;
-        System.Array.ForEach(currentDialogue.DialogueItems.ToArray(), (item) => dialogueQueue.Enqueue(item));
+        dialogueQueue = new QueueADT<DialogueItem>(dialogue.DialogueItems);
         if (!dialogueQueue.IsEmpty) LoadNextItem(); // Load the first item
     }
 
     public void LoadNextItem()
     {
-        if (dialogueQueue.IsEmpty)
+        if (dialogueQueue?.IsEmpty ?? true)
         {
             Clear();
             return;
@@ -50,9 +50,9 @@ public class DialogueManager : MonoBehaviour
     public void Clear()
     {
         if (currentDialogue == null) return;
-        currentDialogue.UnloadAllSprites();
-		dialogueQueue.Clear();
+        currentDialogue?.UnloadAllSprites();
+        dialogueQueue = null;
         currentDialogue = null;
-		CurrentDialogueItem = null;
-	}
+        CurrentDialogueItem = null;
+    }
 }

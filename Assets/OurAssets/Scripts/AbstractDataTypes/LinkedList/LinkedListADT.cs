@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -11,19 +12,24 @@ public class LinkedListADT<T> : ICollection<T>, IReadOnlyCollection<T>
 
 	public bool IsReadOnly => false;
 
-	public LinkedListADT(bool isCircular = true) { IsCircular = isCircular; }
+	public LinkedListADT(bool isCircular = true)
+	{
+		IsCircular = isCircular;
+		m_Comparer = EqualityComparer<T>.Default;
+	}
 
 	public LinkedListADT(IEnumerable<T> collection, bool isCircular = true)
 	{
+		if (collection == null) throw new ArgumentNullException(nameof(collection));
 		IsCircular = isCircular;
-		if (collection == null) throw new System.ArgumentNullException("collection");
+		m_Comparer = EqualityComparer<T>.Default;
 		foreach (T item in collection) AddBack(item);
 	}
 
 	public void AddFront(LinkedListADTNode<T> node)
 	{
-		if (node == null) throw new System.ArgumentNullException("node is null");
-		if (node.List != null) throw new System.ArgumentException("node already belongs to a list");
+		if (node == null) throw new ArgumentNullException("node is null");
+		if (node.List != null) throw new ArgumentException("node already belongs to a list");
 		if (Front == null) CreateList(node);
 		else InternalAddBefore(Front, node);
 	}
@@ -37,8 +43,8 @@ public class LinkedListADT<T> : ICollection<T>, IReadOnlyCollection<T>
 
 	public void AddBack(LinkedListADTNode<T> node)
 	{
-		if (node == null) throw new System.ArgumentNullException("node is null");
-		if (node.List != null) throw new System.ArgumentException("node already belongs to a list");
+		if (node == null) throw new ArgumentNullException("node is null");
+		if (node.List != null) throw new ArgumentException("node already belongs to a list");
 		if (Back == null) CreateList(node);
 		else InternalAddAfter(Back, node);
 	}
@@ -52,10 +58,10 @@ public class LinkedListADT<T> : ICollection<T>, IReadOnlyCollection<T>
 
 	public void AddBefore(LinkedListADTNode<T> node, LinkedListADTNode<T> newNode)
 	{
-		if (node == null) throw new System.ArgumentNullException("node is null");
-		if (newNode == null) throw new System.ArgumentNullException("newNode is null");
-		if (node.List != this) throw new System.ArgumentException("node doesn't belong to this list");
-		if (newNode.List != null) throw new System.ArgumentException("newNode already belongs to a list");
+		if (node == null) throw new ArgumentNullException("node is null");
+		if (newNode == null) throw new ArgumentNullException("newNode is null");
+		if (node.List != this) throw new ArgumentException("node doesn't belong to this list");
+		if (newNode.List != null) throw new ArgumentException("newNode already belongs to a list");
 		InternalAddBefore(node, newNode);
 	}
 
@@ -68,10 +74,10 @@ public class LinkedListADT<T> : ICollection<T>, IReadOnlyCollection<T>
 
 	public void AddAfter(LinkedListADTNode<T> node, LinkedListADTNode<T> newNode)
 	{
-		if (node == null) throw new System.ArgumentNullException("node is null");
-		if (newNode == null) throw new System.ArgumentNullException("newNode is null");
-		if (node.List != this) throw new System.ArgumentException("node doesn't belong to this list");
-		if (newNode.List != null) throw new System.ArgumentException("newNode already belongs to a list");
+		if (node == null) throw new ArgumentNullException("node is null");
+		if (newNode == null) throw new ArgumentNullException("newNode is null");
+		if (node.List != this) throw new ArgumentException("node doesn't belong to this list");
+		if (newNode.List != null) throw new ArgumentException("newNode already belongs to a list");
 		InternalAddAfter(node, newNode);
 	}
 
@@ -89,8 +95,30 @@ public class LinkedListADT<T> : ICollection<T>, IReadOnlyCollection<T>
 		LinkedListADTNode<T> current = Front;
 		while (current != null)
 		{
-			if (current._value.Equals(value)) return current;
-			current = current._next == Front ? null : current._next;
+			if (m_Comparer.Equals(current._value, value)) return current;
+			current = current != Back ? current._next : null;
+		}
+		return null;
+	}
+
+	public LinkedListADTNode<T> FindFirst(Predicate<LinkedListADTNode<T>> predicate)
+	{
+		LinkedListADTNode<T> current = Front;
+		while (current != null)
+		{
+			if (predicate(current)) return current;
+			current = current != Back ? current._next : null;
+		}
+		return null;
+	}
+
+	public LinkedListADTNode<T> FindFirst(Predicate<T> predicate)
+	{
+		LinkedListADTNode<T> current = Front;
+		while (current != null)
+		{
+			if (predicate(current._value)) return current;
+			current = current != Back ? current._next : null;
 		}
 		return null;
 	}
@@ -100,17 +128,39 @@ public class LinkedListADT<T> : ICollection<T>, IReadOnlyCollection<T>
 		LinkedListADTNode<T> current = Back;
 		while (current != null)
 		{
-			if (current._value.Equals(value)) return current;
-			current = current._previous == Back ? null : current._previous;
+			if (m_Comparer.Equals(current._value, value)) return current;
+			current = current != Front ? current._previous : null;
+		}
+		return null;
+	}
+
+	public LinkedListADTNode<T> FindLast(Predicate<LinkedListADTNode<T>> predicate)
+	{
+		LinkedListADTNode<T> current = Back;
+		while (current != null)
+		{
+			if (predicate(current)) return current;
+			current = current != Front ? current._previous : null;
+		}
+		return null;
+	}
+
+	public LinkedListADTNode<T> FindLast(Predicate<T> predicate)
+	{
+		LinkedListADTNode<T> current = Back;
+		while (current != null)
+		{
+			if (predicate(current._value)) return current;
+			current = current != Front ? current._previous : null;
 		}
 		return null;
 	}
 
 	public void CopyTo(T[] array, int arrayIndex)
 	{
-		if (array == null) throw new System.ArgumentNullException("array");
-		if (arrayIndex < 0 || arrayIndex > array.Length) throw new System.IndexOutOfRangeException("arrayIndex out of range");
-		if (array.Length - arrayIndex < Count) throw new System.ArgumentException("not enough space for the LinkedListADT in array");
+		if (array == null) throw new ArgumentNullException("array");
+		if (arrayIndex < 0 || arrayIndex > array.Length) throw new IndexOutOfRangeException("arrayIndex out of range");
+		if (array.Length - arrayIndex < Count) throw new ArgumentException("not enough space for the LinkedListADT in array");
 		LinkedListADTNode<T> current = Front;
 		while (current != null)
 		{
@@ -122,7 +172,7 @@ public class LinkedListADT<T> : ICollection<T>, IReadOnlyCollection<T>
 	public void Remove(LinkedListADTNode<T> node)
 	{
 		if (node == null) return;
-		if (node.List != this) throw new System.ArgumentException("node doesn't belong to this list");
+		if (node.List != this) throw new ArgumentException("node doesn't belong to this list");
 		InternalRemove(node);
 	}
 
@@ -171,7 +221,7 @@ public class LinkedListADT<T> : ICollection<T>, IReadOnlyCollection<T>
 		LinkedListADTNode<T> current = Front;
 		while (current != null)
 		{
-			LinkedListADTNode<T> next = current._next == Front ? null : current._next;
+			LinkedListADTNode<T> next = current != Back ? current._next : null;
 			current.FreeMemory();
 			current = next;
 		}
@@ -231,12 +281,13 @@ public class LinkedListADT<T> : ICollection<T>, IReadOnlyCollection<T>
 		--Count;
 	}
 
-	public IEnumerator<T> GetEnumerator() => new Enumerator(this);
+	public Enumerator GetEnumerator() => new Enumerator(this);
 
-	IEnumerator IEnumerable.GetEnumerator()
-	{
-		return GetEnumerator();
-	}
+	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+	IEqualityComparer<T> m_Comparer;
 
 	public struct Enumerator : IEnumerator<T>, IEnumerator
 	{
@@ -248,10 +299,9 @@ public class LinkedListADT<T> : ICollection<T>, IReadOnlyCollection<T>
 
 		public bool MoveNext()
 		{
-			if (m_CurrentNode == null || m_Index == m_List.Count) return false;
+			if (!m_CurrentNode) return false;
 			m_CurrentValue = m_CurrentNode.Value;
-			m_CurrentNode = m_CurrentNode.Next;
-			++m_Index;
+			m_CurrentNode = m_CurrentNode != m_List.Back ? m_CurrentNode.Next : null;
 			return true;
 		}
 
@@ -259,7 +309,6 @@ public class LinkedListADT<T> : ICollection<T>, IReadOnlyCollection<T>
 		{
 			m_CurrentNode = m_List.Front;
 			m_CurrentValue = default;
-			m_Index = 0;
 		}
 
 		internal Enumerator(LinkedListADT<T> list)
@@ -267,12 +316,10 @@ public class LinkedListADT<T> : ICollection<T>, IReadOnlyCollection<T>
 			m_List = list;
 			m_CurrentNode = list.Front;
 			m_CurrentValue = default;
-			m_Index = 0;
 		}
 
 		LinkedListADT<T> m_List;
 		LinkedListADTNode<T> m_CurrentNode;
 		T m_CurrentValue;
-		int m_Index;
 	}
 }
