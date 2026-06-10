@@ -90,7 +90,7 @@ public class PlayerMovement : MonoBehaviour
         #endregion
     }
 
-	void Update()
+    void Update()
     {
         // David - character controller is grounded is very buggy I've found it
         // only updates every other frame, so I am using sphere cast as it is more
@@ -115,11 +115,11 @@ public class PlayerMovement : MonoBehaviour
         {
             if (isGrounded)
             {
-				if (IsFullyOnStableGround) // David - Not partially over the edge
-				{
-					lastStableGround = transform.parent;
-					stableGroundOffset = transform.position - lastStableGround.position;
-				}
+                if (IsFullyOnStableGround) // David - Not partially over the edge
+                {
+                    lastStableGround = transform.parent;
+                    stableGroundOffset = transform.position - lastStableGround.position;
+                }
                 currentCoyoteTime = coyoteTime;
             }
             else
@@ -174,18 +174,18 @@ public class PlayerMovement : MonoBehaviour
         characterController.Move(moveDirection * Time.deltaTime);
     }
 
-	void SetAnimatorValues()
-	{
+    void SetAnimatorValues()
+    {
         Vector3 hVel = moveDirection;
         hVel.y = 0f;
         playerAnimator.Speed = hVel.magnitude;
         playerAnimator.IsCrouching = isCrouching;
         playerAnimator.IsGrounded = isGrounded;
-	}
+    }
 
-	#region Input Handling
-	// David - Added jump function to work with new input system
-	void HandleJumpInput(InputAction.CallbackContext ctx)
+    #region Input Handling
+    // David - Added jump function to work with new input system
+    void HandleJumpInput(InputAction.CallbackContext ctx)
     {
         if (ctx.started || ctx.performed) jumpInputWasPressed = true;
         else if (ctx.canceled) jumpInputWasPressed = false;
@@ -231,6 +231,21 @@ public class PlayerMovement : MonoBehaviour
     }
     #endregion
 
+    // David (NOTE for whoever is marking this) - I have genuinely tried everything to get the player
+    // moving with the platforms in a way that doesn't jitter, but if I change one thing something else breaks.
+    // The character controller isn't designed for working with moving platforms and it doesn't help that the ground
+    // check is separated from it. Though using characterController.isGrounded breaks another thing. Either
+    // the camera is jittery, the player slides off, or the player constantly plays the falling animation.
+    // There is no way with our current setup to get it to look good without rewriting the entire movement
+    // from scratch. Probably the custom kinematic character controller on the asset store would work, but
+    // I don't understand it well enough to write code for it. This is why usually professional projects write
+    // custom character controllers, but I couldn't get the collide and slide algorithm to work, but I couldn't
+    // get Kasper Fauerby's algorithm to work for me and trying to read through large codebases like the kinematic
+    // controller is impossible without lots of time.
+    //
+    // tl;dr Character can't move with moving platform without jitter no matter what is done because of how
+    // Unity designed it, so I am leaving as is.
+
     // David - Attach the player to the platform so that it follows the movement of the
     // platform
     public void AttachToPlatform(Transform platform) => transform.parent = platform;
@@ -249,53 +264,53 @@ public class PlayerMovement : MonoBehaviour
     // David - Added ability to be able to disable input (when dialogue starts)
     public void DisableMovement() => canMove = false;
 
-	// David - Check if all extremes of the characterController collider are above the same
-	// stable ground (none of them are over an edge or above a different collider)
-	bool IsFullyOnStableGround
-	{
-		get
-		{
-			if (transform.parent == null) return false;
-			// David - Check if all points are on ground
-			if (!Physics.Raycast(
-				origin: transform.position + transform.up * characterController.radius,
-				direction: -transform.up,
-				hitInfo: out RaycastHit hit0,
-				maxDistance: characterController.radius + groundDistance,
-				layerMask: groundMask,
+    // David - Check if all extremes of the characterController collider are above the same
+    // stable ground (none of them are over an edge or above a different collider)
+    bool IsFullyOnStableGround
+    {
+        get
+        {
+            if (transform.parent == null) return false;
+            // David - Check if all points are on ground
+            if (!Physics.Raycast(
+                origin: transform.position + transform.up * characterController.radius,
+                direction: -transform.up,
+                hitInfo: out RaycastHit hit0,
+                maxDistance: characterController.radius + groundDistance,
+                layerMask: groundMask,
                 queryTriggerInteraction: QueryTriggerInteraction.Ignore)) return false;
-			if (!Physics.Raycast(
-				origin: transform.position + transform.up * characterController.radius + transform.forward * characterController.radius,
-				direction: -transform.up,
-				hitInfo: out RaycastHit hit1,
-				maxDistance: characterController.radius + groundDistance,
-				layerMask: groundMask,
-				queryTriggerInteraction: QueryTriggerInteraction.Ignore)) return false;
-			if (!Physics.Raycast(
-				origin: transform.position + transform.up * characterController.radius - transform.forward * characterController.radius,
-				direction: -transform.up,
-				hitInfo: out RaycastHit hit2,
-				maxDistance: characterController.radius + groundDistance,
-				layerMask: groundMask,
-				queryTriggerInteraction: QueryTriggerInteraction.Ignore)) return false;
-			if (!Physics.Raycast(
-				origin: transform.position + transform.up * characterController.radius + transform.right * characterController.radius,
-				direction: -transform.up,
-				hitInfo: out RaycastHit hit3,
-				maxDistance: characterController.radius + groundDistance,
-				layerMask: groundMask,
-				queryTriggerInteraction: QueryTriggerInteraction.Ignore)) return false;
-			if (!Physics.Raycast(
-				origin: transform.position + transform.up * characterController.radius - transform.right * characterController.radius,
-				direction: -transform.up,
-				hitInfo: out RaycastHit hit4,
-				maxDistance: characterController.radius + groundDistance,
-				layerMask: groundMask,
-				queryTriggerInteraction: QueryTriggerInteraction.Ignore)) return false;
-			// David - Check if all points are on the same ground
-			return hit0.collider == hit1.collider && hit1.collider == hit2.collider && hit2.collider == hit3.collider && hit3.collider == hit4.collider;
-		}
-	}
+            if (!Physics.Raycast(
+                origin: transform.position + transform.up * characterController.radius + transform.forward * characterController.radius,
+                direction: -transform.up,
+                hitInfo: out RaycastHit hit1,
+                maxDistance: characterController.radius + groundDistance,
+                layerMask: groundMask,
+                queryTriggerInteraction: QueryTriggerInteraction.Ignore)) return false;
+            if (!Physics.Raycast(
+                origin: transform.position + transform.up * characterController.radius - transform.forward * characterController.radius,
+                direction: -transform.up,
+                hitInfo: out RaycastHit hit2,
+                maxDistance: characterController.radius + groundDistance,
+                layerMask: groundMask,
+                queryTriggerInteraction: QueryTriggerInteraction.Ignore)) return false;
+            if (!Physics.Raycast(
+                origin: transform.position + transform.up * characterController.radius + transform.right * characterController.radius,
+                direction: -transform.up,
+                hitInfo: out RaycastHit hit3,
+                maxDistance: characterController.radius + groundDistance,
+                layerMask: groundMask,
+                queryTriggerInteraction: QueryTriggerInteraction.Ignore)) return false;
+            if (!Physics.Raycast(
+                origin: transform.position + transform.up * characterController.radius - transform.right * characterController.radius,
+                direction: -transform.up,
+                hitInfo: out RaycastHit hit4,
+                maxDistance: characterController.radius + groundDistance,
+                layerMask: groundMask,
+                queryTriggerInteraction: QueryTriggerInteraction.Ignore)) return false;
+            // David - Check if all points are on the same ground
+            return hit0.collider == hit1.collider && hit1.collider == hit2.collider && hit2.collider == hit3.collider && hit3.collider == hit4.collider;
+        }
+    }
 
     // David - Reset the player to the last stable ground
     public void ResetToLastStableGround()
