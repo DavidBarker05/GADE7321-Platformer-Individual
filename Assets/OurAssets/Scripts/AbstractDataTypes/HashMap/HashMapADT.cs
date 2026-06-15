@@ -101,6 +101,16 @@ public class HashMapADT<TKey, TValue> : ICollection<KeyValuePair<TKey, TValue>>,
         return true;
     }
 
+    public bool Remove(TKey key, TValue value)
+    {
+        if (key == null) throw new ArgumentNullException(nameof(key));
+        var entry = GetEntry(key);
+        if (!entry || !m_ValueComparer.Equals(entry.Value.Value, value)) return false;
+        int bucketIndex = BucketIndex(key);
+        m_Buckets[bucketIndex].Remove(entry);
+        return true;
+    }
+
     public void Remove(TKey key)
     {
         if (key == null) throw new ArgumentNullException(nameof(key));
