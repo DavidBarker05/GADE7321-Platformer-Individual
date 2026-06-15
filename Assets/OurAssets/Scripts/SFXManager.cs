@@ -16,6 +16,8 @@ public class SFXManager : MonoBehaviour
 {
     public static SFXManager Instance { get; private set; }
 
+    [field: SerializeField]
+    public AudioSource m_DefaultAudioSource { get; private set; }
     [SerializeField]
     List<SFXEntry> m_PseudoDictionary;
 
@@ -100,4 +102,24 @@ public class SFXManager : MonoBehaviour
     public bool Contains(SFXEntry entry) => m_AudioMap.Contains(entry);
     public bool Contains(KeyValuePair<string, AudioClip> entry) => m_AudioMap.Contains(entry);
     public bool ContainsId(string id) => m_AudioMap.ContainsKey(id);
+
+    public void PlayAudio(string id, AudioSource audioSource, bool loop = false)
+    {
+        if (!m_AudioMap.ContainsKey(id)) return;
+        if (loop)
+        {
+            if (audioSource.isPlaying) audioSource.Stop();
+            audioSource.clip = m_AudioMap[id];
+            audioSource.loop = true;
+            audioSource.Play();
+        }
+        else audioSource.PlayOneShot(m_AudioMap[id]);
+    }
+
+    public void StopAudio(string id, AudioSource audioSource)
+    {
+        if (!m_AudioMap.ContainsKey(id) || audioSource.clip != m_AudioMap[id]) return;
+        audioSource.Stop();
+        audioSource.clip = null;
+    }
 }
