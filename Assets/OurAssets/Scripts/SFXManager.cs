@@ -17,7 +17,7 @@ public class SFXManager : MonoBehaviour
     public static SFXManager Instance { get; private set; }
 
     [field: SerializeField]
-    public AudioSource m_DefaultAudioSource { get; private set; }
+    public AudioSource DefaultAudioSource { get; private set; }
     [SerializeField]
     List<SFXEntry> m_PseudoDictionary;
 

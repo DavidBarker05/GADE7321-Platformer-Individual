@@ -6,6 +6,8 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField]
     PlayerAnimator playerAnimator; // David added. David - Using this instead of animator so other classes can change values if needed maybe like the direction the player falls when they die
+    [SerializeField]
+    PlayerSound playerSound; // David added
     public float walkSpeed = 6f;
     public float runSpeed = 12f;
     public float jumpHeight = 1f; // David - Changed to set jump height instead of velocity
@@ -30,6 +32,25 @@ public class PlayerMovement : MonoBehaviour
     float coyoteTime = 0.2f; // David added
     [SerializeField, Range(0f, 1f)]
     float jumpBuffer = 0.1f; // David added
+
+    // David - Used to check the tag of the ground the player is on
+    // to play sound based on material
+    public string GroundTag
+    {
+        get
+        {
+            if (transform.parent != startingParent) return transform.parent.gameObject.tag;
+            else if (Physics.SphereCast(
+                origin: transform.position + Vector3.up * (characterController.radius + 0.01f), // David - Move slightly up because otherwise returns false sometimes (specfically on start)
+                radius: characterController.radius,
+                direction: Vector3.down,
+                hitInfo: out groundHit,
+                maxDistance: groundDistance + 0.01f, // David - Move slightly further to compensate for being slightly higher
+                layerMask: groundMask,
+                queryTriggerInteraction: QueryTriggerInteraction.Ignore)) return groundHit.collider.gameObject.tag;
+            else return string.Empty;
+        }
+    }
 
     bool isGrounded; // David added
 
@@ -220,6 +241,7 @@ public class PlayerMovement : MonoBehaviour
             isJumping = false;
             isFalling = false;
             moveDirection.y = -1f;
+            playerSound.PlaySound("land");
         }
     }
 
@@ -228,6 +250,7 @@ public class PlayerMovement : MonoBehaviour
         isJumping = true;
         currentJumpBuffer = 0f;
         moveDirection.y = Mathf.Sqrt(2f * gravity * jumpHeight);
+        playerSound.PlaySound("jump");
     }
     #endregion
 

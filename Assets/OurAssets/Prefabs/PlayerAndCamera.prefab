@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 3072630045797483126}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.2, y: 2.7611701, z: -5}
+  m_LocalPosition: {x: 0.2, y: 1.525, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -325,6 +325,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   playerAnimator: {fileID: 41462699850712606}
+  playerSound: {fileID: 5173786027203692288}
   walkSpeed: 6
   runSpeed: 9
   jumpHeight: 1
@@ -332,6 +333,7 @@ MonoBehaviour:
   defaultHeight: 1.6
   crouchHeight: 1
   crouchSpeed: 3
+  slopeSlideSpeed: 9
   groundDistance: 0.1
   groundMask:
     serializedVersion: 2
@@ -886,6 +888,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 699d6994e5e5ae64caa65d6c92610fad, type: 3}
       insertIndex: -1
       addedObject: {fileID: 41462699850712606}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 699d6994e5e5ae64caa65d6c92610fad, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5173786027203692288}
   m_SourcePrefab: {fileID: 100100000, guid: 699d6994e5e5ae64caa65d6c92610fad, type: 3}
 --- !u!4 &3756630218463317191 stripped
 Transform:
@@ -931,3 +936,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6862f5c74d7e7ad49ad7d759149b9416, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimator
+  m_DampTime: 0.1
+--- !u!114 &5173786027203692288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4569442692143076989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04ac30639003ce14992b3044cfc4b432, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSound
+  m_PlayerMovement: {fileID: 2098784780391194063}
