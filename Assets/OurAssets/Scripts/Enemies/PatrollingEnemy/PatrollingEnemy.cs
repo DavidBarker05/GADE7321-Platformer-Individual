@@ -9,6 +9,21 @@ public class PatrollingEnemy : BaseEnemy
 
 	LinkedListADTNode<Transform> m_CurrentDestination;
 
+#if UNITY_EDITOR
+	void OnDrawGizmosSelected()
+	{
+		if (m_PatrolPoints == null || m_PatrolPoints.IsEmpty) return;
+		foreach (Transform t in m_PatrolPoints)
+		{
+			Gizmos.color = Color.white;
+			Gizmos.DrawWireSphere(t.position + Vector3.up * 0.25f, 0.25f);
+			Transform next = m_PatrolPoints.FindFirst(t).Next.Value;
+			Debug.DrawLine(t.position + Vector3.up * 0.25f, next.position + Vector3.up * 0.25f, Color.yellow);
+		}
+		if (m_CurrentDestination) Debug.DrawLine(transform.position + Vector3.up, m_CurrentDestination.Value.position + Vector3.up * 0.25f, Color.magenta);
+	}
+#endif
+
 	private void OnValidate() => GetComponent<CapsuleCollider>().isTrigger = true;
 
 	private void OnEnable() => GetComponent<CapsuleCollider>().isTrigger = true;
