@@ -185,8 +185,8 @@ public class PlayerMovement : MonoBehaviour
 
         // David - Shorter version of what Abhi wrote that also adjusts the centre since
         // player position is now at y = 0 and the speed is already calculated
-        characterController.center = new Vector3(characterController.center.x, characterController.height / 2f, characterController.center.z);
         characterController.height = isCrouching && canMove ? crouchHeight : defaultHeight;
+        characterController.center = new Vector3(characterController.center.x, characterController.height / 2f, characterController.center.z);
 
         SetAnimatorValues();
 
