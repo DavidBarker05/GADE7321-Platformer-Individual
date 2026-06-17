@@ -15834,6 +15834,7 @@ MonoBehaviour:
   notEnoughItems: 0
   endDialogue: 1
   nextSceneIndex: 2
+  loadingScreen: {fileID: 1173411123}
 --- !u!114 &1191926164
 MonoBehaviour:
   m_ObjectHideFlags: 0

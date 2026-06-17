@@ -9,6 +9,8 @@ public class EndDialogueTrigger : DialogueTrigger
     int endDialogue = 1;
     [SerializeField]
     int nextSceneIndex = -1;
+    [SerializeField]
+    LoadingScreen loadingScreen;
 
     protected bool EndConditionSingletonsAreValid => CollectableManager.Instance;
     protected bool EndConditionsAreMet => CollectableManager.Instance.HasEnoughItems;
@@ -35,7 +37,11 @@ public class EndDialogueTrigger : DialogueTrigger
 
     protected void EndOfLevelFunction()
     {
-        if (nextSceneIndex > -1) SceneManager.LoadSceneAsync(nextSceneIndex); // Maybe we even do loading screen idk this is fine for now
+        if (nextSceneIndex > -1)
+        {
+            loadingScreen.SceneIndexToLoad = nextSceneIndex;
+            loadingScreen.gameObject.SetActive(true);
+        }
         else
         {
             // For now just close game once we have a main menu then we can go back or restart
