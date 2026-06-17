@@ -7,6 +7,7 @@ public class BossAI : BaseEnemy // Extend BaseEnemy so can damage player and be 
     public enum State { Patrol, Chase }
     public State currentState = State.Patrol;
 
+
     [Header("Patrol")]
     public float patrolSpeed = 9f;
     public float patrolAngularSpeed = 120f; // David added
@@ -22,6 +23,7 @@ public class BossAI : BaseEnemy // Extend BaseEnemy so can damage player and be 
     public float chaseSpeed = 12f;
     public float chaseAngularSpeed = 360f; // David added
 
+    private AudioSource audioSource; // David added
     private NavMeshAgent agent;
     private GraphADT<Transform> patrolPoints; // David added
     private GraphADTNode<Transform>[] path; // David added
@@ -60,6 +62,7 @@ public class BossAI : BaseEnemy // Extend BaseEnemy so can damage player and be 
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>(); // David - Moved to awake instead of start
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Start()
@@ -104,6 +107,7 @@ public class BossAI : BaseEnemy // Extend BaseEnemy so can damage player and be 
 
         if (CanSeePlayer())
         {
+            if (currentState == State.Patrol) SFXManager.Instance.PlayAudio("Growl", audioSource);
             currentState = State.Chase;
             return;
         }
